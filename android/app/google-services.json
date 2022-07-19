@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "572206073840",
+    "project_id": "flutterappmapcoffeeshop",
+    "storage_bucket": "flutterappmapcoffeeshop.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:572206073840:android:b8e7659915951abf16ff35",
+        "android_client_info": {
+          "package_name": "com.sau.project.mcs.th.app_map_coffee_shop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "572206073840-hpot30oeeraoqhu8qkpv0t708k1pfjn6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0ugUrbPc3jxbAXhFl_-dYYt7y53QojXs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "572206073840-hpot30oeeraoqhu8qkpv0t708k1pfjn6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
