@@ -1,4 +1,5 @@
 class MapCoffeeShop {
+  String? _id;
   String? _image;
   String? _userID;
   String? _password;
@@ -8,11 +9,13 @@ class MapCoffeeShop {
   String? _contact;
   String? _officeHoursOpen;
   String? _officeHoursClose;
-  String? _address;
+  String? _latitude;
+  String? _longitude;
   String? _provinceID;
 
   MapCoffeeShop(
       {
+        String? id,
         String? image,
         String? userID,
         String? password,
@@ -22,9 +25,14 @@ class MapCoffeeShop {
         String? contact,
         String? officeHoursOpen,
         String? officeHoursClose,
-        String? address,
+        String? latitude,
+        String? longitude,
         String? provinceID
       }) {
+
+    if (id != null) {
+      this._id = id;
+    }
     if (image != null) {
       this._image = image;
     }
@@ -52,14 +60,19 @@ class MapCoffeeShop {
     if (officeHoursClose != null) {
       this._officeHoursClose = officeHoursClose;
     }
-    if (address != null) {
-      this._address = address;
+    if (latitude != null) {
+      this._latitude = latitude;
+    }
+    if (longitude != null) {
+      this._longitude = longitude;
     }
     if (provinceID != null) {
       this._provinceID = provinceID;
     }
   }
 
+  String? get id => _id;
+  set id(String? id) => _id = id;
   String? get image => _image;
   set image(String? image) => _image = image;
   String? get userID => _userID;
@@ -80,12 +93,15 @@ class MapCoffeeShop {
   String? get officeHoursClose => _officeHoursClose;
   set officeHoursClose(String? officeHoursClose) =>
       _officeHoursClose = officeHoursClose;
-  String? get address => _address;
-  set address(String? address) => _address = address;
+  String? get latitude => _latitude;
+  set address(String? address) => _latitude = address;
+  String? get longitude => _longitude;
+  set longitude(String? address) => _longitude = address;
   String? get provinceID => _provinceID;
   set provinceID(String? provinceID) => _provinceID = provinceID;
 
   MapCoffeeShop.fromJson(Map<String, dynamic> json) {
+    _id = json['Id'];
     _image = json['Image'];
     _userID = json['User_ID'];
     _password = json['password'];
@@ -95,12 +111,14 @@ class MapCoffeeShop {
     _contact = json['Contact'];
     _officeHoursOpen = json['Office_Hours_Open'];
     _officeHoursClose = json['Office_Hours_close'];
-    _address = json['Address'];
+    _latitude = json['Latitude'];
+    _longitude = json['Longitude'];
     _provinceID = json['Province_ID'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['Id'] = this._id;
     data['Image'] = this._image;
     data['User_ID'] = this._userID;
     data['password'] = this._password;
@@ -110,7 +128,8 @@ class MapCoffeeShop {
     data['Contact'] = this._contact;
     data['Office_Hours_Open'] = this._officeHoursOpen;
     data['Office_Hours_close'] = this._officeHoursClose;
-    data['Address'] = this._address;
+    data['Latitude'] = this._latitude;
+    data['Longitude'] = this._longitude;
     data['Province_ID'] = this._provinceID;
     return data;
   }

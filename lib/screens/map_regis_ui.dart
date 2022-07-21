@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:app_map_coffee_shop/screens/location_search_dialogue.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -12,7 +13,6 @@ import '../blocs/application_bloc.dart';
 import 'location_controller.dart';
 
 class MapRegisUI extends StatefulWidget {
-  const MapRegisUI({Key? key}) : super(key: key);
 
   @override
   State<MapRegisUI> createState() => _MapRegisUIState();
@@ -20,6 +20,7 @@ class MapRegisUI extends StatefulWidget {
 
 class _MapRegisUIState extends State<MapRegisUI> {
 
+  List x = [];
   int bnbIndex = 0;
   late CameraPosition _cameraPosition;
   late GoogleMapController _mapController;
@@ -139,16 +140,6 @@ class _MapRegisUIState extends State<MapRegisUI> {
   }
 
   @override
-  void initState() {
-    // TODO: implement initState
-    // _goToMe();
-    // createMarker(37.3743350709, -122.075217962, 'ตำแหน่ง',
-    //     'คุณอยู่ตรงนี้');
-    // createCircle(37.3743350709, -122.075217962);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context);
@@ -167,12 +158,11 @@ class _MapRegisUIState extends State<MapRegisUI> {
             backgroundColor: const Color(0xffFFA238),
           ),
           body: (applicationBloc.currentLocation == null)
-        ? Center(child: CircularProgressIndicator(),)
+        ? const Center(child: CircularProgressIndicator(),)
         :
         Stack(
             children: <Widget>[
               GoogleMap(
-
                 initialCameraPosition: CameraPosition(
                   target: LatLng(
                     applicationBloc.currentLocation!.latitude,
@@ -186,64 +176,110 @@ class _MapRegisUIState extends State<MapRegisUI> {
                 onMapCreated: (GoogleMapController controller) {
                   //เอาตัว controller ที่สร้างมากำหนดให้กับ Google Map นี้
                   gooController.complete(controller);
-                  // _mapController = controller;
-                  // locationController.setMapController(controller);
                 },
                 myLocationEnabled: true,
                 myLocationButtonEnabled: true,
                 mapToolbarEnabled: true,
                 onTap: (location) {
-                  List x = [location.latitude.toString(),location.longitude.toString()];
-                  Navigator.of(context).pop(x);
+                  x = [location.latitude.toString(),location.longitude.toString()];
+
+                  setState((){
+                    gooMarker.add(
+                        Marker(
+                          markerId: MarkerId('place_name'),
+                          position: LatLng(location.latitude, location.longitude),
+                          infoWindow: const InfoWindow(
+                            title: 'ตำแหน่ง',
+                            snippet: 'คุณอยู่ตรงนี้',
+                          ),
+                        )
+                    );
+                  });
+
                 },
               ),
-              // Positioned(
-              //   top: 8,
-              //   left: 20,
-              //   right: 60,
-              //   child: GestureDetector(
-              //     onTap: () => Get.dialog(LocationSearchDialog(mapController: _mapController)),
-              //     child: Container(
-              //       height: 50,
-              //       padding: const EdgeInsets.symmetric(horizontal: 5),
-              //       decoration: BoxDecoration(
-              //           color: Theme.of(context).cardColor,
-              //           borderRadius: BorderRadius.circular(10)
-              //       ),
-              //       child: Row(
-              //           children: [
-              //             Icon(
-              //                 Icons.location_on,
-              //                 size: 25,
-              //                 color: Theme.of(context).primaryColor
-              //             ),
-              //             const SizedBox(width: 5),
-              //             //here we show the address on the top
-              //             Expanded(
-              //               child: Text(
-              //                 '${locationController.pickPlaceMark.name ??
-              //                     ''} ${locationController.pickPlaceMark.locality ??
-              //                     ''} '
-              //                     '${locationController.pickPlaceMark.postalCode ??
-              //                     ''} ${locationController.pickPlaceMark.country ??
-              //                     ''}',
-              //                 style: const TextStyle(fontSize: 20),
-              //                 maxLines: 1, overflow: TextOverflow.ellipsis,
-              //               ),
-              //             ),
-              //             const SizedBox(width: 10),
-              //             Icon(
-              //                 Icons.search,
-              //                 size: 25,
-              //                 color: Theme.of(context).textTheme.bodyText1!.color
-              //             ),
-              //       ]),
-              //     ),
-              //   ),
-              // ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 40),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: ElevatedButton(
+                    onPressed: (){
+                      Navigator.of(context).pop(x);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                      ),
+                      fixedSize: Size(170, 50.0),
+                      primary: const Color(0xff955000),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(
+                          FontAwesomeIcons.locationArrow
+                        ),
+                        Text(
+                          'set location',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),//bottom
             ],
           )
       );
 
   }
 }
+
+// Positioned(
+//   top: 8,
+//   left: 20,
+//   right: 60,
+//   child: GestureDetector(
+//     onTap: () => Get.dialog(LocationSearchDialog(mapController: _mapController)),
+//     child: Container(
+//       height: 50,
+//       padding: const EdgeInsets.symmetric(horizontal: 5),
+//       decoration: BoxDecoration(
+//           color: Theme.of(context).cardColor,
+//           borderRadius: BorderRadius.circular(10)
+//       ),
+//       child: Row(
+//           children: [
+//             Icon(
+//                 Icons.location_on,
+//                 size: 25,
+//                 color: Theme.of(context).primaryColor
+//             ),
+//             const SizedBox(width: 5),
+//             //here we show the address on the top
+//             Expanded(
+//               child: Text(
+//                 '${locationController.pickPlaceMark.name ??
+//                     ''} ${locationController.pickPlaceMark.locality ??
+//                     ''} '
+//                     '${locationController.pickPlaceMark.postalCode ??
+//                     ''} ${locationController.pickPlaceMark.country ??
+//                     ''}',
+//                 style: const TextStyle(fontSize: 20),
+//                 maxLines: 1, overflow: TextOverflow.ellipsis,
+//               ),
+//             ),
+//             const SizedBox(width: 10),
+//             Icon(
+//                 Icons.search,
+//                 size: 25,
+//                 color: Theme.of(context).textTheme.bodyText1!.color
+//             ),
+//       ]),
+//     ),
+//   ),
+// ),

@@ -36,8 +36,10 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
   TextEditingController contactCtrl = TextEditingController(text: '');
   TextEditingController timeopenCtrl = TextEditingController(text: '');
   TextEditingController timecloseCtrl = TextEditingController(text: '');
-  TextEditingController addressCtrl = TextEditingController(text: '');
   TextEditingController provinceCtrl = TextEditingController(text: '');
+  TextEditingController latitudeCtrl = TextEditingController(text: '');
+  TextEditingController longitudeCtrl = TextEditingController(text: '');
+
 
   showBottomSheetForSelectImage(BuildContext context) {
     showModalBottomSheet(
@@ -131,14 +133,6 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
       final minutes = time_close?.minute.toString().padLeft(2, '0');
 
       return '$hours:$minutes';
-    }
-  }
-
-  Inputlocation(){
-    if(addressCtrl.text.trim().length == 0){
-      return '7 ซ.เพชร 79 แยก 2 หนองแขม หนองค้างพลู';
-    } else {
-
     }
   }
 
@@ -432,18 +426,21 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
             password: mapCoffeeShop.password!
         ).then((value) async{
           //ทำการอัปโหลดที่อยู่ของรูปพร้อมกับข้อมูลอื่นๆ โดยจะเรียกใช้ api
+
           bool resultInsertLocation = await apiInsertLocationShop(
-              usernameCtrl.text.trim(),
-              passwordCtrl.text.trim(),
-              emailCtrl.text.trim(),
-              imageUrl,
-              shopnameCtrl.text.trim(),
-              descriptitonCtrl.text.trim(),
-              contactCtrl.text.trim(),
-              addressCtrl.text.trim(),
-              provinceCtrl.text.trim(),
-              timeopenCtrl.text.trim(),
-              timecloseCtrl.text.trim()
+            FirebaseAuth.instance.currentUser!.uid,
+            usernameCtrl.text.trim(),
+            passwordCtrl.text.trim(),
+            emailCtrl.text.trim(),
+            imageUrl,
+            shopnameCtrl.text.trim(),
+            descriptitonCtrl.text.trim(),
+            contactCtrl.text.trim(),
+            latitudeCtrl.text.trim(),
+            longitudeCtrl.text.trim(),
+            provinceCtrl.text.trim(),
+            timeopenCtrl.text.trim(),
+            timecloseCtrl.text.trim()
           );
 
           if(resultInsertLocation == true)
@@ -487,7 +484,7 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'สมัครสาชิก',
+          'สมัครสมาชิก',
           style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 23,
@@ -909,59 +906,123 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
                     ),
                   ),//closing time
                   Padding(
-                    padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
-                    child: TextField(
-                      style: const TextStyle(
-                        color: Colors.black,
-                      ),
-                      scrollPadding: const EdgeInsets.all(10),
-                      controller: addressCtrl,
-                      decoration:InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.apartment,
-                          color: Color(0xff955000),
-                        ),
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Color(0xff955000),
-                              width: 2.0,
-                            )
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color(0xff955000),
-                              width: 3.0
+                    padding: const EdgeInsets.only(top: 20,left: 40,right: 40),
+                    child: SizedBox(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          latitudeCtrl.text = '';
+                          longitudeCtrl.text = '';
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MapRegisUI()
+                              )
+                          ).then((value){
+                            lat = value[0];
+                            lng = value[1];
+                            latitudeCtrl.text = lat;
+                            longitudeCtrl.text = lng;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)
                           ),
+                          primary: const Color(0xff955000),
                         ),
-                        hintText: Inputlocation(),
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
+                        child: Row(
+                          children: [
+                            Icon(Icons.add_location_alt_outlined),
+                            Padding(
+                              padding: EdgeInsets.only(left: 20),
+                              child: Text(
+                                'ตำแหน่งปัจจุบัน',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: wi * 0.295),
+                            Icon(Icons.arrow_forward_ios),
+                          ],
                         ),
-                        labelText: 'ใส่ที่อยู่ร้านหรือกดที่ไอคอน   -->',
-                        labelStyle: TextStyle(
-                          color: Colors.black38,
-                        ),
-                        suffixIcon: IconButton(
-                            onPressed: (){
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MapRegisUI()
-                                  )
-                              ).then((value){
-                                addressCtrl.text = value[0] + ',' + value[1];
-                                lat = value[0];
-                                lng = value[1];
-                              });
-                            },
-                            icon: Icon(
-                              Icons.add_location_alt_outlined,
-                              color: Colors.red,
-                              size: 30,
-                            ))
                       ),
+                      height: 50,
+                      width: wi,
                     ),
-                  ),//address
+                  ),//address but
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                              padding: const EdgeInsets.only(
+                                top: 5, left: 40, right: 10
+                              ),
+                              child: TextField(
+                                controller: latitudeCtrl,
+                                decoration: const InputDecoration(
+                                  labelText: 'latitude',
+                                  hintStyle: TextStyle(
+                                      color: Colors.black38,
+                                      fontWeight: FontWeight.bold
+                                  ),
+                                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xff955000),
+                                        width: 2.0,
+                                      )
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Color(0xff955000),
+                                        width: 3.0
+                                    ),
+                                  ),
+                                ),
+                                enabled: false,
+                              ),
+                            ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 5, left: 10, right: 40
+                              ),
+                              child: TextField(
+                                controller: longitudeCtrl,
+                                decoration: const InputDecoration(
+                                  labelText: 'longitude',
+                                  hintStyle: TextStyle(
+                                      color: Colors.black38,
+                                      fontWeight: FontWeight.bold
+                                  ),
+                                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xff955000),
+                                        width: 2.0,
+                                      )
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Color(0xff955000),
+                                        width: 3.0
+                                    ),
+                                  ),
+                                ),
+                                enabled: false,
+                              ),
+                            ),
+                        ),
+
+                      ],
+                    ),
+                  ),//lat and lon
                   Padding(
                     padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
                     child: TextField(
@@ -1027,8 +1088,8 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
                         else if(time_close == null){
                           showWarningDialog('กรุณาใส่เวลาปิดร้านด้วย!!!');
                         }
-                        else if(addressCtrl.text.trim().length == 0){
-                          showWarningDialog('กรุณาใสที่อยู่ร้านด้วย!!!');
+                        else if(latitudeCtrl.text.trim().length == 0){
+                          showWarningDialog('กรุณาใส่ตำแหน่งด้วย!!!');
                         }
                         else if(provinceCtrl.text.trim().length == 0){
                           showWarningDialog('กรุณาใส่รหัสไปรษณีด้วย!!!');

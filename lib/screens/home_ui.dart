@@ -25,9 +25,9 @@ class HomeUI extends StatefulWidget {
 class _HomeUIState extends State<HomeUI> {
 
   final auth = FirebaseAuth.instance;
-  MapCoffeeShop mapCoffeeShop = MapCoffeeShop();
-  CollectionReference collectionRef =
-    FirebaseFirestore.instance.collection("mcs_location");
+  // MapCoffeeShop mapCoffeeShop = MapCoffeeShop();
+  // CollectionReference collectionRef =
+  //   FirebaseFirestore.instance.collection("mcs_location");
 
   showWarningDialog(String msg) async {
     showDialog(
@@ -137,6 +137,7 @@ class _HomeUIState extends State<HomeUI> {
 
     double wi = MediaQuery.of(context).size.width;
     double hi = MediaQuery.of(context).size.height;
+    String id = FirebaseAuth.instance.currentUser!.uid;
     String email = FirebaseAuth.instance.currentUser!.email!;
     final Stream<QuerySnapshot> _userStrem = FirebaseFirestore.instance
         .collection("mcs_location")
@@ -208,7 +209,7 @@ class _HomeUIState extends State<HomeUI> {
                             ),
                           ),
                         ),
-                        // Text(data['Description']),
+                        // Text(data.toString()),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -221,7 +222,21 @@ class _HomeUIState extends State<HomeUI> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => UpdateRegister(),
+                                          builder: (context) => UpdateRegister(
+                                              id.toString(),
+                                              data['User_ID'],
+                                              data['Image'],
+                                              data['Email'],
+                                              data['password'],
+                                              data['Location_Name'],
+                                              data['Description'],
+                                              data['Contact'],
+                                              data['Office_Hours_Open'],
+                                              data['Office_Hours_close'],
+                                              data['Longitude'],
+                                              data['Latitude'],
+                                              data['Province_ID']
+                                          ),
                                       )
                                   );
                                 },

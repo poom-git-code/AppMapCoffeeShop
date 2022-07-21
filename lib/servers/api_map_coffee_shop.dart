@@ -4,8 +4,43 @@ import 'package:app_map_coffee_shop/models/manu_coffee_shop.dart';
 
 import '../models/image_shop.dart';
 
-Future<bool> apiInsertLocationShop(String User_ID, String password, String Email, String Image, String Location_Name,
-    String Description, String Contact, String Address, String Province_ID, String Office_Hours_Open, String Office_Hours_close) async{
+Future<bool> apiInsertLocationShop(String Idpath, String User_ID, String password, String Email, String Image, String Location_Name,
+    String Description, String Contact, String Latitude, String Longitude, String Province_ID, String Office_Hours_Open, String Office_Hours_close) async{
+  //สร้าง object เพื่อนไปเก็บที่ firestore database
+  MapCoffeeShop timeline = MapCoffeeShop(
+    id: Idpath,
+    image: Image,
+    userID: User_ID,
+    password: password,
+    email: Email,
+    locationName: Location_Name,
+    description: Description,
+    contact: Contact,
+    officeHoursOpen: Office_Hours_Open,
+    officeHoursClose: Office_Hours_close,
+    latitude: Latitude,
+    longitude: Longitude,
+    provinceID: Province_ID
+  );
+
+  //นำ object แปลงเป็น json แล้วส่งไปที่ firestore database
+  try{
+    await FirebaseFirestore.instance.collection("mcs_location").doc(Idpath).set(timeline.toJson());
+    return true;
+  }catch(ex){
+    return false;
+  }
+}
+Stream<QuerySnapshot>? apiGetAllLocation(){
+  try{
+    return FirebaseFirestore.instance.collection('mcs_location').snapshots();
+  }catch(ex){
+    return null;
+  }
+}
+//-------------------------------------------------------------------------------------------------------
+Future<bool> apiUpdateLocationShop(String id, String User_ID, String password, String Email, String Image, String Location_Name,
+    String Description, String Contact, String Latitude, String Longitude, String Province_ID, String Office_Hours_Open, String Office_Hours_close) async{
   //สร้าง object เพื่อนไปเก็บที่ firestore database
   MapCoffeeShop timeline = MapCoffeeShop(
       image: Image,
@@ -17,23 +52,17 @@ Future<bool> apiInsertLocationShop(String User_ID, String password, String Email
       contact: Contact,
       officeHoursOpen: Office_Hours_Open,
       officeHoursClose: Office_Hours_close,
-      address: Address,
+      latitude: Latitude,
+      longitude: Longitude,
       provinceID: Province_ID
   );
 
   //นำ object แปลงเป็น json แล้วส่งไปที่ firestore database
   try{
-    await FirebaseFirestore.instance.collection("mcs_location").add(timeline.toJson());
+    await FirebaseFirestore.instance.collection("mcs_location").doc(id).update(timeline.toJson());
     return true;
   }catch(ex){
     return false;
-  }
-}
-Stream<QuerySnapshot>? apiGetAllLocation(){
-  try{
-    return FirebaseFirestore.instance.collection('mcs_location').snapshots();
-  }catch(ex){
-    return null;
   }
 }
 //-------------------------------------------------------------------------------------------------------

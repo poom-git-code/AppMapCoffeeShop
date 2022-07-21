@@ -14,6 +14,36 @@ import 'package:path/path.dart' as Path;
 
 class UpdateRegister extends StatefulWidget {
 
+  String id;
+  String? User_ID;
+  String Image;
+  String? Email;
+  String? password;
+  String? Location_Name;
+  String? Description;
+  String? Contact;
+  String? Office_Hours_Open;
+  String? Office_Hours_close;
+  String? Longitude;
+  String? Latitude;
+  String? Province_ID;
+
+  UpdateRegister(
+      this.id,
+      this.User_ID,
+      this.Image,
+      this.Email,
+      this.password,
+      this.Location_Name,
+      this.Description,
+      this.Contact,
+      this.Office_Hours_Open,
+      this.Office_Hours_close,
+      this.Longitude,
+      this.Latitude,
+      this.Province_ID,
+      );
+
   @override
   State<UpdateRegister> createState() => _UpdateRegisterState();
 }
@@ -34,7 +64,8 @@ class _UpdateRegisterState extends State<UpdateRegister> {
   TextEditingController contactCtrl = TextEditingController(text: '');
   TextEditingController timeopenCtrl = TextEditingController(text: '');
   TextEditingController timecloseCtrl = TextEditingController(text: '');
-  TextEditingController addressCtrl = TextEditingController(text: '');
+  TextEditingController latitudeCtrl = TextEditingController(text: '');
+  TextEditingController longitudeCtrl = TextEditingController(text: '');
   TextEditingController provinceCtrl = TextEditingController(text: '');
 
   showBottomSheetForSelectImage(BuildContext context) {
@@ -116,7 +147,7 @@ class _UpdateRegisterState extends State<UpdateRegister> {
     } else {
       final hours = time_open?.hour.toString().padLeft(2, '0');
       final minutes = time_open?.minute.toString().padLeft(2, '0');
-
+      timeopenCtrl.text = '$hours:$minutes';
       return '$hours:$minutes';
     }
   }
@@ -127,16 +158,8 @@ class _UpdateRegisterState extends State<UpdateRegister> {
     } else {
       final hours = time_close?.hour.toString().padLeft(2, '0');
       final minutes = time_close?.minute.toString().padLeft(2, '0');
-
+      timecloseCtrl.text = '$hours:$minutes';
       return '$hours:$minutes';
-    }
-  }
-
-  Inputlocation(){
-    if(addressCtrl.text.trim().length == 0){
-      return '7 ซ.เพชร 79 แยก 2 หนองแขม หนองค้างพลู';
-    } else {
-
     }
   }
 
@@ -412,65 +435,88 @@ class _UpdateRegisterState extends State<UpdateRegister> {
   UpdateRegisterMapCoffeeShop() async{
     //อัปโหลดรูปรูปไปไว้ที่ storage ของ Firebase เพราะเราต้องการตำแหน่งรูปมาใช้เพื่อเก็บใน firestore
     //ชื่อรูป
-    String imageName = Path.basename(_image!.path);
+    if(_image != null){
+      String imageName = Path.basename(_image!.path);
 
-    //อัปโหลดรุปไปที่ storage ที่ firebase
-    Reference ref =  FirebaseStorage.instance.ref().child('Picture_location_tb/' + imageName);
-    UploadTask uploadTask = ref.putFile(_image!);
-    //เมื่ออัปโหลดรูปเสร็จเราจะได้ที่อยู่ของรูป แล้วเราก็จะส่งที่อยู่อยู่ของรูปไปพร้อมกับข้อมูลอื่นๆ ไปเก็บที่ Firestore Database ของ Firebase
-    uploadTask.whenComplete(() async{
-      String imageUrl = await ref.getDownloadURL();
+      //อัปโหลดรุปไปที่ storage ที่ firebase
+      Reference ref =  FirebaseStorage.instance.ref().child('Picture_location_tb/' + imageName);
+      UploadTask uploadTask = ref.putFile(_image!);
+      //เมื่ออัปโหลดรูปเสร็จเราจะได้ที่อยู่ของรูป แล้วเราก็จะส่งที่อยู่อยู่ของรูปไปพร้อมกับข้อมูลอื่นๆ ไปเก็บที่ Firestore Database ของ Firebase
+      uploadTask.whenComplete(() async{
+        String imageUrl = await ref.getDownloadURL();
 
-      try {
-        mapCoffeeShop.email = emailCtrl.text.trim();
-        mapCoffeeShop.password = passwordCtrl.text.trim();
-
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-            email: mapCoffeeShop.email!,
-            password: mapCoffeeShop.password!
-        ).then((value) async{
-          //ทำการอัปโหลดที่อยู่ของรูปพร้อมกับข้อมูลอื่นๆ โดยจะเรียกใช้ api
-          bool resultInsertLocation = await apiInsertLocationShop(
-              usernameCtrl.text.trim(),
-              passwordCtrl.text.trim(),
-              emailCtrl.text.trim(),
-              imageUrl,
-              shopnameCtrl.text.trim(),
-              descriptitonCtrl.text.trim(),
-              contactCtrl.text.trim(),
-              addressCtrl.text.trim(),
-              provinceCtrl.text.trim(),
-              timeopenCtrl.text.trim(),
-              timecloseCtrl.text.trim()
-          );
-
-          if(resultInsertLocation == true)
-          {
-            ShowResultInsertDialog("บันทึกเรียนร้อยเเล้ว");
-          }
-          else
-          {
-            ShowResultInsertDialog("พบปัญหาในการทำงานกรุณาลองใหม่อีกครั้ง");
-          }
-        });
-
-
-      }
-      on FirebaseAuthException catch(e){
-        String message;
-        if(e.code == 'emile-already-in-use'){
-          message = 'อีเมลนี้ถูกใช้ไปเเล้วโปรดใช้อีเมลอื่นแทน';
-        }
-        else{
-          message = 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษรเป็นต้นไป';
-        }
-        Fluttertoast.showToast(
-            msg: message,
-            gravity: ToastGravity.CENTER
+        //ทำการอัปโหลดที่อยู่ของรูปพร้อมกับข้อมูลอื่นๆ โดยจะเรียกใช้ api
+        bool resultUpdateLocation = await apiUpdateLocationShop(
+            widget.id,
+            usernameCtrl.text.trim(),
+            passwordCtrl.text.trim(),
+            emailCtrl.text.trim(),
+            imageUrl,
+            shopnameCtrl.text.trim(),
+            descriptitonCtrl.text.trim(),
+            contactCtrl.text.trim(),
+            latitudeCtrl.text.trim(),
+            longitudeCtrl.text.trim(),
+            provinceCtrl.text.trim(),
+            timeopenCtrl.text.trim(),
+            timecloseCtrl.text.trim()
         );
-      }
-    });
 
+        if(resultUpdateLocation == true)
+        {
+          ShowResultInsertDialog("บันทึกเรียนร้อยเเล้ว");
+        }
+        else
+        {
+          ShowResultInsertDialog("พบปัญหาในการทำงานกรุณาลองใหม่อีกครั้ง");
+        }
+      });
+    }
+    else{
+      bool resultUpdateLocation = await apiUpdateLocationShop(
+          widget.id,
+          usernameCtrl.text.trim(),
+          passwordCtrl.text.trim(),
+          emailCtrl.text.trim(),
+          widget.Image,
+          shopnameCtrl.text.trim(),
+          descriptitonCtrl.text.trim(),
+          contactCtrl.text.trim(),
+          latitudeCtrl.text.trim(),
+          longitudeCtrl.text.trim(),
+          provinceCtrl.text.trim(),
+          timeopenCtrl.text.trim(),
+          timecloseCtrl.text.trim()
+      );
+
+      if(resultUpdateLocation == true)
+      {
+        ShowResultInsertDialog("บันทึกเรียนร้อยเเล้ว");
+      }
+      else
+      {
+        ShowResultInsertDialog("พบปัญหาในการทำงานกรุณาลองใหม่อีกครั้ง");
+      }
+
+    }
+  }
+
+  @override
+  void initState() {
+    usernameCtrl.text = widget.User_ID!;
+    emailCtrl.text = widget.Email!;
+    passwordCtrl.text = widget.password!;
+    shopnameCtrl.text = widget.Location_Name!;
+    descriptitonCtrl.text = widget.Description!;
+    contactCtrl.text = widget.Contact!;
+    timeopenCtrl.text = widget.Office_Hours_Open!;
+    timecloseCtrl.text = widget.Office_Hours_close!;
+    latitudeCtrl.text = widget.Latitude!;
+    longitudeCtrl.text = widget.Longitude!;
+    provinceCtrl.text = widget.Province_ID!;
+
+    // TODO: implement initState
+    super.initState();
   }
 
   @override
@@ -481,11 +527,11 @@ class _UpdateRegisterState extends State<UpdateRegister> {
     String lat = '';
     String lng = '';
 
-    String email = FirebaseAuth.instance.currentUser!.email!;
-    final Stream<QuerySnapshot> _userStrem = FirebaseFirestore.instance
-        .collection("mcs_location")
-        .where('Email', isEqualTo: email)
-        .snapshots();
+    // String email = FirebaseAuth.instance.currentUser!.email!;
+    // final Stream<QuerySnapshot> _userStrem = FirebaseFirestore.instance
+    //     .collection("mcs_location")
+    //     .where('Email', isEqualTo: email)
+    //     .snapshots();
 
     return Scaffold(
       appBar: AppBar(
@@ -514,555 +560,562 @@ class _UpdateRegisterState extends State<UpdateRegister> {
               painter: ShapesPainter(),
             ),
           ),
-          StreamBuilder<QuerySnapshot>(
-              stream: _userStrem,
-              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (!snapshot.hasData) {
-                  return CircularProgressIndicator();
-                }
-                return ListView(
-                  children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                    Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-                    usernameCtrl.text = data['User_ID'];
-                    emailCtrl.text = data['Email'];
-                    shopnameCtrl.text = data['Location_Name'];
-                    descriptitonCtrl.text = data['Description'];
-                    contactCtrl.text = data['Contact'];
-                    timeopenCtrl.text = data['Office_Hours_Open'];
-                    timecloseCtrl.text = data['Office_Hours_close'];
-
-                    provinceCtrl.text = data['Province_ID'];
-                    return SingleChildScrollView(
-                      child: Center(
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 15),
-                              child: Column(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 100.0,
-                                    backgroundColor: Color(0x00FFB35C),
-                                    child: ClipOval(
-                                      child: SizedBox(
-                                        width: 180.0,
-                                        height: 180.0,
-                                        child: FadeInImage.assetNetwork(
-                                          placeholder: 'assets/images/Coffee_icon.png',
-                                          image: data['Image'],
-                                          fit: BoxFit.fill,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 0),
-                                    child: IconButton(
-                                      onPressed: () {
-                                        showBottomSheetForSelectImage(context);
-                                      },
-                                      icon: const Icon(
-                                        Icons.add_a_photo,
-                                        size: 30.0,
-                                        color: Color(0xff955000),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),//กล้อง
-                            Padding(
-                              padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
-                              child: TextFormField(
-                                scrollPadding: const EdgeInsets.all(10),
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                ),
-                                controller: usernameCtrl,
-                                decoration: const InputDecoration(
-                                  prefixIcon: Icon(
-                                    Icons.person_outline,
-                                    color: Color(0xff955000),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Color(0xff955000),
-                                        width: 2.0,
-                                      )
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Color(0xff955000),
-                                        width: 3.0
-                                    ),
-                                  ),
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                  labelText: 'ชื่อผู้ใช้',
-                                  labelStyle: TextStyle(
-                                    color: Colors.black38,
-                                  ),
-                                ),
-                              ),
-                            ),//user
-                            Padding(
-                              padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
-                              child: TextField(
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                ),
-                                autofocus: true,
-                                scrollPadding: const EdgeInsets.all(10),
-                                controller: emailCtrl,
-                                decoration: const InputDecoration(
-                                  prefixIcon: Icon(
-                                    Icons.email,
-                                    color: Color(0xff955000),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Color(0xff955000),
-                                        width: 2.0,
-                                      )
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Color(0xff955000),
-                                        width: 3.0
-                                    ),
-                                  ),
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                  labelText: 'E-Mail',
-                                  labelStyle: TextStyle(
-                                    color: Colors.black38,
-                                  ),
-                                ),
-                                enabled: false,
-                              ),
-                            ),//email
-                            Padding(
-                              padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
-                              child: TextField(
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                ),
-                                scrollPadding: const EdgeInsets.all(10),
-                                controller: shopnameCtrl,
-                                decoration: const InputDecoration(
-                                  prefixIcon: Icon(
-                                    Icons.water_damage_outlined,
-                                    color: Color(0xff955000),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Color(0xff955000),
-                                        width: 2.0,
-                                      )
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Color(0xff955000),
-                                        width: 3.0
-                                    ),
-                                  ),
-                                  hintText: 'Homu cafe',
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                  labelText: 'ชื่อร้านกาแฟ',
-                                  labelStyle: TextStyle(
-                                    color: Colors.black38,
-                                  ),
-                                ),
-                              ),
-                            ),//ชื่อร้านกาแฟ
-                            Padding(
-                              padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
-                              child: TextField(
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                ),
-                                scrollPadding: const EdgeInsets.all(10),
-                                controller: descriptitonCtrl,
-                                decoration: const InputDecoration(
-                                  prefixIcon: Icon(
-                                    Icons.deck_sharp,
-                                    color: Color(0xff955000),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Color(0xff955000),
-                                        width: 2.0,
-                                      )
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Color(0xff955000),
-                                        width: 3.0
-                                    ),
-                                  ),
-                                  hintText: 'สไตล์ธรรมชาติ',
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                  labelText: 'สไตล์ร้าน',
-                                  labelStyle: TextStyle(
-                                    color: Colors.black38,
-                                  ),
-                                ),
-                              ),
-                            ),//Description
-                            Padding(
-                              padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
-                              child: TextField(
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                ),
-                                scrollPadding: const EdgeInsets.all(10),
-                                controller: contactCtrl,
-                                decoration: const InputDecoration(
-                                  prefixIcon: Icon(
-                                    Icons.phone_android,
-                                    color: Color(0xff955000),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Color(0xff955000),
-                                        width: 2.0,
-                                      )
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Color(0xff955000),
-                                        width: 3.0
-                                    ),
-                                  ),
-                                  hintText: '020300568',
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                  labelText: 'เบอร์โทรร้าน',
-                                  labelStyle: TextStyle(
-                                    color: Colors.black38,
-                                  ),
-                                ),
-                                keyboardType: TextInputType.number,
-                              ),
-                            ),//Contact
-                            Padding(
-                              padding: const EdgeInsets.only(top: 20),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Flexible(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 40.0,
-                                        vertical: 5.0,
-                                      ),
-                                      child: TextField(
-                                        controller: timeopenCtrl,
-                                        decoration: InputDecoration(
-                                          hintText: getTextTimeOpen(),
-                                          hintStyle: const TextStyle(
-                                              color: Colors.black38,
-                                              fontWeight: FontWeight.bold
-                                          ),
-                                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                                          suffixIcon: const Icon(Icons.more_time),
-                                          enabledBorder: const UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color: Color(0xff955000),
-                                                width: 2.0,
-                                              )
-                                          ),
-                                          focusedBorder: const UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Color(0xff955000),
-                                                width: 3.0
-                                            ),
-                                          ),
-                                        ),
-                                        enabled: false,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 35),
-                                    child: ElevatedButton(
-                                      onPressed: (){
-                                        pickTimeOpen(context);
-                                        timeopenCtrl.text = '';
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Color(0xff955000),
-                                      ),
-                                      child: const Text(
-                                        "+",
-                                        style: TextStyle(
-                                            fontSize: 30,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),//Opening Time
-                            Padding(
-                              padding: const EdgeInsets.only(top: 20),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Flexible(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 40.0,
-                                        vertical: 5.0,
-                                      ),
-                                      child: TextField(
-                                        controller: timecloseCtrl,
-                                        decoration: InputDecoration(
-                                          hintText: getTextTimeclose(),
-                                          hintStyle: const TextStyle(
-                                              color: Colors.black38,
-                                              fontWeight: FontWeight.bold
-                                          ),
-                                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                                          suffixIcon: const Icon(Icons.more_time),
-                                          enabledBorder: const UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color: Color(0xff955000),
-                                                width: 2.0,
-                                              )
-                                          ),
-                                          focusedBorder: const UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Color(0xff955000),
-                                                width: 3.0
-                                            ),
-                                          ),
-                                        ),
-                                        enabled: false,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 35),
-                                    child: ElevatedButton(
-                                      onPressed: (){
-                                        pickTimeClose(context);
-                                        timecloseCtrl.text = '';
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Color(0xff955000),
-                                      ),
-                                      child: const Text(
-                                        "+",
-                                        style: TextStyle(
-                                            fontSize: 30,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),//closing time
-                            Padding(
-                              padding: const EdgeInsets.only(top: 20,left: 40,right: 40),
-                              child: SizedBox(
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => MapRegisUI()
-                                        )
-                                    ).then((value){
-                                      addressCtrl.text = value[0] + ',' + value[1];
-                                      lat = value[0];
-                                      lng = value[1];
-                                    });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    primary: const Color(0xff955000),
-                                  ),
-                                  child: Row(
-                                    children: const [
-                                      Icon(Icons.add_location_alt_outlined),
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 20,right: 135),
-                                        child: Text(
-                                          'ตำแหน่งปัจจุบัน',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold
-                                          ),
-                                        ),
-                                      ),
-                                      Icon(Icons.arrow_forward_ios),
-                                    ],
-                                  ),
-                                ),
-                                height: 50,
-                                width: wi,
-                              ),
-                            ),//address but
-                            Padding(
-                              padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
-                              child: TextField(
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                ),
-                                scrollPadding: const EdgeInsets.all(10),
-                                controller: addressCtrl,
-                                decoration:InputDecoration(
-                                    prefixIcon: Icon(
-                                      Icons.apartment,
-                                      color: Color(0xff955000),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Color(0xff955000),
-                                          width: 2.0,
-                                        )
-                                    ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Color(0xff955000),
-                                          width: 3.0
-                                      ),
-                                    ),
-                                    hintText: Inputlocation(),
-                                    hintStyle: TextStyle(
-                                      color: Colors.grey,
-                                    ),
-                                    labelText: 'ที่ตั้ง',
-                                    labelStyle: TextStyle(
-                                      color: Colors.black38,
-                                    ),
-                                ),
-                              ),
-                            ),//address
-                            Padding(
-                              padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
-                              child: TextField(
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                ),
-                                scrollPadding: const EdgeInsets.all(10),
-                                controller: provinceCtrl,
-                                decoration: const InputDecoration(
-                                  prefixIcon: Icon(
-                                    Icons.account_balance,
-                                    color: Color(0xff955000),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Color(0xff955000),
-                                        width: 2.0,
-                                      )
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Color(0xff955000),
-                                        width: 3.0
-                                    ),
-                                  ),
-                                  hintText: '10160',
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                  labelText: 'รหัสไปรษณี',
-                                  labelStyle: TextStyle(
-                                    color: Colors.black38,
-                                  ),
-                                ),
-                                keyboardType: TextInputType.number,
-                              ),
-                            ),//Province_ID
-                            Padding(
-                              padding: const EdgeInsets.only(right: 30, left: 30, top: 30, bottom: 50),
-                              child: ElevatedButton(
-                                onPressed: (){
-                                  if(usernameCtrl.text.trim().length == 0){
-                                    showWarningDialog('กรุณาใส่รหัสผู้ใช้ด้วย!!!');
-                                  }
-                                  else if(passwordCtrl.text.trim().length == 0){
-                                    showWarningDialog('กรุณาใสรหัสผ่านด้วย!!!');
-                                  }
-                                  else if(emailCtrl.text.trim().length == 0){
-                                    showWarningDialog('กรุณาใสอีเมล์ด้วย!!!');
-                                  }
-                                  else if(shopnameCtrl.text.trim().length == 0){
-                                    showWarningDialog('กรุณาใส่ชื่อร้านด้วย!!!');
-                                  }
-                                  else if(descriptitonCtrl.text.trim().length == 0){
-                                    showWarningDialog('กรุณาใส่สไตย์ร้านด้วย!!!');
-                                  }
-                                  else if(contactCtrl.text.trim().length == 0){
-                                    showWarningDialog('กรุณาใส่เบอร์โทรด้วย!!!');
-                                  }
-                                  else if(time_open == null){
-                                    showWarningDialog('กรุณาใส่เวลาเปิดร้านด้วย!!!');
-                                  }
-                                  else if(time_close == null){
-                                    showWarningDialog('กรุณาใส่เวลาปิดร้านด้วย!!!');
-                                  }
-                                  else if(addressCtrl.text.trim().length == 0){
-                                    showWarningDialog('กรุณาใสที่อยู่ร้านด้วย!!!');
-                                  }
-                                  else if(provinceCtrl.text.trim().length == 0){
-                                    showWarningDialog('กรุณาใส่รหัสไปรษณีด้วย!!!');
-                                  }
-                                  else if(_image == null){
-                                    showWarningDialog('กรุณาใส่รูปร้านด้วย!!!');
-                                  }
-                                  else{
-                                    try{
-                                      timeopenCtrl.text = getTextTimeOpen();
-                                      timecloseCtrl.text = getTextTimeclose();
-                                      showConfirmInsertDialog();
-                                    }catch(e){
-                                      showWarningDialog('เกิดข้อผิดพลาดกรุณาลองใหม่อีกครั้ง');
-                                    }
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)
-                                  ),
-                                  fixedSize: Size(wi, 50.0),
-                                  primary: const Color(0xff955000),
-                                ),
-                                child: const Text(
-                                  'ยืนยัน',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20
-                                  ),
-                                ),
-                              ),
-                            ),//bottom
-                          ],
+          SingleChildScrollView(
+          child: Center(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 100.0,
+                        backgroundColor: Color(0x00FFB35C),
+                        child: ClipOval(
+                          child: SizedBox(
+                            width: 180.0,
+                            height: 180.0,
+                            child:_image != null
+                                ?
+                            Image.file(
+                              _image!,
+                              fit: BoxFit.cover,
+                            )
+                                :
+                            FadeInImage.assetNetwork(
+                              placeholder: 'assets/images/Coffee_icon.png',
+                              image: widget.Image,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
                         ),
                       ),
-                    );
-                  }).toList(),
-                );
-              }
-          ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 0),
+                        child: IconButton(
+                          onPressed: () {
+                            showBottomSheetForSelectImage(context);
+                          },
+                          icon: const Icon(
+                            Icons.add_a_photo,
+                            size: 30.0,
+                            color: Color(0xff955000),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),//กล้อง
+                Padding(
+                  padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
+                  child: TextFormField(
+                    scrollPadding: const EdgeInsets.all(10),
+                    style: const TextStyle(
+                      color: Colors.black,
+                    ),
+                    controller: usernameCtrl,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.person_outline,
+                        color: Color(0xff955000),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xff955000),
+                            width: 2.0,
+                          )
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color(0xff955000),
+                            width: 3.0
+                        ),
+                      ),
+                      hintStyle: TextStyle(
+                        color: Colors.grey,
+                      ),
+                      labelText: 'ชื่อผู้ใช้',
+                      labelStyle: TextStyle(
+                        color: Colors.black38,
+                      ),
+                    ),
+                  ),
+                ),//user
+                Padding(
+                  padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
+                  child: TextField(
+                    style: const TextStyle(
+                      color: Colors.black,
+                    ),
+                    autofocus: true,
+                    scrollPadding: const EdgeInsets.all(10),
+                    controller: emailCtrl,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.email,
+                        color: Color(0xff955000),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xff955000),
+                            width: 2.0,
+                          )
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color(0xff955000),
+                            width: 3.0
+                        ),
+                      ),
+                      hintStyle: TextStyle(
+                        color: Colors.grey,
+                      ),
+                      labelText: 'E-Mail',
+                      labelStyle: TextStyle(
+                        color: Colors.black38,
+                      ),
+                    ),
+                    enabled: false,
+                  ),
+                ),//email
+                Padding(
+                  padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
+                  child: TextField(
+                    style: const TextStyle(
+                      color: Colors.black,
+                    ),
+                    scrollPadding: const EdgeInsets.all(10),
+                    controller: shopnameCtrl,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.water_damage_outlined,
+                        color: Color(0xff955000),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xff955000),
+                            width: 2.0,
+                          )
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color(0xff955000),
+                            width: 3.0
+                        ),
+                      ),
+                      hintText: 'Homu cafe',
+                      hintStyle: TextStyle(
+                        color: Colors.grey,
+                      ),
+                      labelText: 'ชื่อร้านกาแฟ',
+                      labelStyle: TextStyle(
+                        color: Colors.black38,
+                      ),
+                    ),
+                  ),
+                ),//ชื่อร้านกาแฟ
+                Padding(
+                  padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
+                  child: TextField(
+                    style: const TextStyle(
+                      color: Colors.black,
+                    ),
+                    scrollPadding: const EdgeInsets.all(10),
+                    controller: descriptitonCtrl,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.deck_sharp,
+                        color: Color(0xff955000),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xff955000),
+                            width: 2.0,
+                          )
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color(0xff955000),
+                            width: 3.0
+                        ),
+                      ),
+                      hintText: 'สไตล์ธรรมชาติ',
+                      hintStyle: TextStyle(
+                        color: Colors.grey,
+                      ),
+                      labelText: 'สไตล์ร้าน',
+                      labelStyle: TextStyle(
+                        color: Colors.black38,
+                      ),
+                    ),
+                  ),
+                ),//Description
+                Padding(
+                  padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
+                  child: TextField(
+                    style: const TextStyle(
+                      color: Colors.black,
+                    ),
+                    scrollPadding: const EdgeInsets.all(10),
+                    controller: contactCtrl,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.phone_android,
+                        color: Color(0xff955000),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xff955000),
+                            width: 2.0,
+                          )
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color(0xff955000),
+                            width: 3.0
+                        ),
+                      ),
+                      hintText: '020300568',
+                      hintStyle: TextStyle(
+                        color: Colors.grey,
+                      ),
+                      labelText: 'เบอร์โทรร้าน',
+                      labelStyle: TextStyle(
+                        color: Colors.black38,
+                      ),
+                    ),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),//Contact
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 40.0,
+                            vertical: 5.0,
+                          ),
+                          child: TextField(
+                            controller: timeopenCtrl,
+                            decoration: InputDecoration(
+                              hintText: getTextTimeOpen(),
+                              hintStyle: const TextStyle(
+                                  color: Colors.black38,
+                                  fontWeight: FontWeight.bold
+                              ),
+                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                              suffixIcon: const Icon(Icons.more_time),
+                              enabledBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color(0xff955000),
+                                    width: 2.0,
+                                  )
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xff955000),
+                                    width: 3.0
+                                ),
+                              ),
+                            ),
+                            enabled: false,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 35),
+                        child: ElevatedButton(
+                          onPressed: (){
+                            pickTimeOpen(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Color(0xff955000),
+                          ),
+                          child: const Text(
+                            "+",
+                            style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),//Opening Time
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 40.0,
+                            vertical: 5.0,
+                          ),
+                          child: TextField(
+                            controller: timecloseCtrl,
+                            decoration: InputDecoration(
+                              hintText: getTextTimeclose(),
+                              hintStyle: const TextStyle(
+                                  color: Colors.black38,
+                                  fontWeight: FontWeight.bold
+                              ),
+                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                              suffixIcon: const Icon(Icons.more_time),
+                              enabledBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color(0xff955000),
+                                    width: 2.0,
+                                  )
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xff955000),
+                                    width: 3.0
+                                ),
+                              ),
+                            ),
+                            enabled: false,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 35),
+                        child: ElevatedButton(
+                          onPressed: (){
+                            pickTimeClose(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Color(0xff955000),
+                          ),
+                          child: const Text(
+                            "+",
+                            style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),//closing time
+                Padding(
+                  padding: const EdgeInsets.only(top: 20,left: 40,right: 40),
+                  child: SizedBox(
+                    child: ElevatedButton(
+                      onPressed: () {
 
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MapRegisUI(
+
+                                )
+                            )
+                        ).then((value){
+                          latitudeCtrl.text = '';
+                          longitudeCtrl.text = '';
+                          lat = value[0];
+                          lng = value[1];
+                          latitudeCtrl.text = lat;
+                          longitudeCtrl.text = lng;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        primary: const Color(0xff955000),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.add_location_alt_outlined),
+                          Padding(
+                            padding: EdgeInsets.only(left: 20),
+                            child: Text(
+                              'ตำแหน่งปัจจุบัน',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: wi * 0.295),
+                          Icon(Icons.arrow_forward_ios),
+                        ],
+                      ),
+                    ),
+                    height: 50,
+                    width: wi,
+                  ),
+                ),//address but
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 5, left: 40, right: 10
+                          ),
+                          child: TextField(
+                            controller: latitudeCtrl,
+                            decoration: const InputDecoration(
+                              hintText: 'latitude',
+                              hintStyle: TextStyle(
+                                  color: Colors.black38,
+                                  fontWeight: FontWeight.bold
+                              ),
+                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color(0xff955000),
+                                    width: 2.0,
+                                  )
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xff955000),
+                                    width: 3.0
+                                ),
+                              ),
+                            ),
+                            enabled: false,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 5, left: 10, right: 40
+                          ),
+                          child: TextField(
+                            controller: longitudeCtrl,
+                            decoration: const InputDecoration(
+                              hintText: 'longitude',
+                              hintStyle: TextStyle(
+                                  color: Colors.black38,
+                                  fontWeight: FontWeight.bold
+                              ),
+                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color(0xff955000),
+                                    width: 2.0,
+                                  )
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xff955000),
+                                    width: 3.0
+                                ),
+                              ),
+                            ),
+                            enabled: false,
+                          ),
+                        ),
+                      ),
+
+                    ],
+                  ),
+                ),//lat and lon
+                Padding(
+                  padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
+                  child: TextField(
+                    style: const TextStyle(
+                      color: Colors.black,
+                    ),
+                    scrollPadding: const EdgeInsets.all(10),
+                    controller: provinceCtrl,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.account_balance,
+                        color: Color(0xff955000),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xff955000),
+                            width: 2.0,
+                          )
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color(0xff955000),
+                            width: 3.0
+                        ),
+                      ),
+                      hintText: '10160',
+                      hintStyle: TextStyle(
+                        color: Colors.grey,
+                      ),
+                      labelText: 'รหัสไปรษณี',
+                      labelStyle: TextStyle(
+                        color: Colors.black38,
+                      ),
+                    ),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),//Province_ID
+                Padding(
+                  padding: const EdgeInsets.only(right: 30, left: 30, top: 30, bottom: 50),
+                  child: ElevatedButton(
+                    onPressed: (){
+                      if(usernameCtrl.text.trim().length == 0){
+                        showWarningDialog('กรุณาใส่รหัสผู้ใช้ด้วย!!!');
+                      }
+                      else if(shopnameCtrl.text.trim().length == 0){
+                        showWarningDialog('กรุณาใส่ชื่อร้านด้วย!!!');
+                      }
+                      else if(descriptitonCtrl.text.trim().length == 0){
+                        showWarningDialog('กรุณาใส่สไตย์ร้านด้วย!!!');
+                      }
+                      else if(contactCtrl.text.trim().length == 0){
+                        showWarningDialog('กรุณาใส่เบอร์โทรด้วย!!!');
+                      }
+                      else if(latitudeCtrl.text.trim().length == 0){
+                        showWarningDialog('กรุณาใส่ตำแหน่งด้วย!!!');
+                      }
+                      else if(provinceCtrl.text.trim().length == 0){
+                        showWarningDialog('กรุณาใส่รหัสไปรษณีด้วย!!!');
+                      }
+                      else{
+                        try{
+                          showConfirmInsertDialog();
+                        }catch(e){
+                          showWarningDialog('เกิดข้อผิดพลาดกรุณาลองใหม่อีกครั้ง');
+                        }
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                      ),
+                      fixedSize: Size(wi, 50.0),
+                      primary: const Color(0xff955000),
+                    ),
+                    child: const Text(
+                      'แก้ไขข้อมูล',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20
+                      ),
+                    ),
+                  ),
+                ),//bottom
+              ],
+            ),
+          ),
+        ),
         ],
       ),
     );
@@ -1120,3 +1173,28 @@ class _UpdateRegisterState extends State<UpdateRegister> {
 //     ),
 //   ),
 // ),//address
+// StreamBuilder<QuerySnapshot>(
+//     stream: _userStrem,
+//     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+//       if (!snapshot.hasData) {
+//         return CircularProgressIndicator();
+//       }
+//       return ListView(
+//         children: snapshot.data!.docs.map((DocumentSnapshot document) {
+//           Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+//           // usernameCtrl.text = data['User_ID'];
+//           // emailCtrl.text = data['Email'];
+//           // passwordCtrl.text = data['password'];
+//           // shopnameCtrl.text = data['Location_Name'];
+//           // descriptitonCtrl.text = data['Description'];
+//           // contactCtrl.text = data['Contact'];
+//           // timeopenCtrl.text = data['Office_Hours_Open'];
+//           // timecloseCtrl.text = data['Office_Hours_close'];
+//           // longitudeCtrl.text = data['Longitude'];
+//           // latitudeCtrl.text = data['Latitude'];
+//           // provinceCtrl.text = data['Province_ID'];
+//           return
+//         }).toList(),
+//       );
+//     }
+// ),
