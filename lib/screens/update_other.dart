@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,6 +30,7 @@ class _UpdateOtherState extends State<UpdateOther> {
 
   File? _image;
   TextEditingController manunameCtrl = TextEditingController(text: '');
+  TextEditingController email_idCtrl = TextEditingController(text: '');
   TextEditingController priceCtrl = TextEditingController();
 
   showBottomSheetForSelectImage(BuildContext context) {
@@ -351,6 +353,7 @@ class _UpdateOtherState extends State<UpdateOther> {
   }
 
   updateManu() async{
+    email_idCtrl.text = FirebaseAuth.instance.currentUser!.email!;
     if(_image != null){
       String imageName = Path.basename(_image!.path);
 
@@ -363,6 +366,7 @@ class _UpdateOtherState extends State<UpdateOther> {
 
         bool resultInsertFriend = await apiUpdateManu2(
           widget.id,
+          email_idCtrl.text.trim(),
           manunameCtrl.text.trim(),
           priceCtrl.text.trim(),
           imgeUrl,
@@ -379,6 +383,7 @@ class _UpdateOtherState extends State<UpdateOther> {
     }else{
       bool resultInsertFriend = await apiUpdateManu2(
           widget.id,
+          email_idCtrl.text.trim(),
           manunameCtrl.text.trim(),
           priceCtrl.text.trim(),
           widget.image

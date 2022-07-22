@@ -5,7 +5,6 @@ import 'package:app_map_coffee_shop/screens/map_regis_ui.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:app_map_coffee_shop/models/ShapesPainter.dart';
 import 'package:app_map_coffee_shop/servers/api_map_coffee_shop.dart';
@@ -428,7 +427,6 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
           //ทำการอัปโหลดที่อยู่ของรูปพร้อมกับข้อมูลอื่นๆ โดยจะเรียกใช้ api
 
           bool resultInsertLocation = await apiInsertLocationShop(
-            FirebaseAuth.instance.currentUser!.uid,
             usernameCtrl.text.trim(),
             passwordCtrl.text.trim(),
             emailCtrl.text.trim(),

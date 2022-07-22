@@ -191,200 +191,203 @@ class _HomeUIState extends State<HomeUI> {
               return ListView(
                   children: snapshot.data!.docs.map((DocumentSnapshot document) {
                     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          radius: 100.0,
-                          backgroundColor: Color(0x00FFB35C),
-                          child: ClipOval(
-                            child: SizedBox(
-                              width: 180.0,
-                              height: 180.0,
-                              child: FadeInImage.assetNetwork(
-                                placeholder: 'assets/images/Coffee_icon.png',
-                                image: data['Image'],
-                                fit: BoxFit.fill,
+                    return SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: hi * 0.02,),
+                          CircleAvatar(
+                            radius: 100.0,
+                            backgroundColor: Color(0x00FFB35C),
+                            child: ClipOval(
+                              child: SizedBox(
+                                width: 180.0,
+                                height: 180.0,
+                                child: FadeInImage.assetNetwork(
+                                  placeholder: 'assets/images/Coffee_icon.png',
+                                  image: data['Image'],
+                                  fit: BoxFit.fill,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        // Text(data.toString()),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: wi * 0.35,
-                              height: hi * 0.2,
-                              child: RawMaterialButton(
-                                onPressed: (){
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => UpdateRegister(
-                                              id.toString(),
-                                              data['User_ID'],
-                                              data['Image'],
-                                              data['Email'],
-                                              data['password'],
-                                              data['Location_Name'],
-                                              data['Description'],
-                                              data['Contact'],
-                                              data['Office_Hours_Open'],
-                                              data['Office_Hours_close'],
-                                              data['Longitude'],
-                                              data['Latitude'],
-                                              data['Province_ID']
-                                          ),
-                                      )
-                                  );
-                                },
-                                fillColor: Color(0xff955000),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)
-                                ),
-                                elevation: 3.0,
-                                child: Column(
-                                  children: const [
-                                    Icon(
-                                      FontAwesomeIcons.user,
-                                      color: Colors.white,
-                                      size: 40,
-                                    ),
-                                    SizedBox(height: 15,),
-                                    Text(
-                                      'ข้อมูลส่วนตัว',
-                                      style: TextStyle(
-                                          fontSize: 19,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white
+                          SizedBox(height: hi * 0.03,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: wi * 0.35,
+                                height: hi * 0.2,
+                                child: RawMaterialButton(
+                                  onPressed: (){
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => UpdateRegister(
+                                                id.toString(),
+                                                data['User_ID'],
+                                                data['Image'],
+                                                data['Email'],
+                                                data['password'],
+                                                data['Location_Name'],
+                                                data['Description'],
+                                                data['Contact'],
+                                                data['Office_Hours_Open'],
+                                                data['Office_Hours_close'],
+                                                data['Longitude'],
+                                                data['Latitude'],
+                                                data['Province_ID']
+                                            ),
+                                        )
+                                    );
+                                  },
+                                  fillColor: Color(0xff955000),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)
+                                  ),
+                                  elevation: 3.0,
+                                  child: Column(
+                                    children: const [
+                                      Icon(
+                                        FontAwesomeIcons.user,
+                                        color: Colors.white,
+                                        size: 40,
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                padding: EdgeInsets.only(top: 25),
-                              ),
-                            ),
-                            SizedBox(width: wi * 0.1,),
-                            Container(
-                              width: wi * 0.35,
-                              height: hi * 0.2,
-                              child: RawMaterialButton(
-                                onPressed: (){
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => SelectShopPicUI()
-                                      )
-                                  );
-                                },
-                                fillColor: Color(0xff955000),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)
-                                ),
-                                elevation: 3.0,
-                                child: Column(
-                                  children: const [
-                                    Icon(
-                                      FontAwesomeIcons.shop,
-                                      color: Colors.white,
-                                      size: 40,
-                                    ),
-                                    SizedBox(height: 15,),
-                                    Text(
-                                      'รูปร้านค้า',
-                                      style: TextStyle(
-                                          fontSize: 19,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white
+                                      SizedBox(height: 15,),
+                                      Text(
+                                        'ข้อมูลส่วนตัว',
+                                        style: TextStyle(
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
+                                  padding: EdgeInsets.only(top: 25),
                                 ),
-                                padding: EdgeInsets.only(top: 25),
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: wi * 0.15,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: wi * 0.35,
-                              height: hi * 0.2,
-                              child: RawMaterialButton(
-                                onPressed: (){
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ShowManuUI()
-                                      )
-                                  );
-                                },
-                                fillColor: Color(0xff955000),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)
-                                ),
-                                elevation: 3.0,
-                                child: Column(
-                                  children: const [
-                                    Icon(
-                                      FontAwesomeIcons.mugHot,
-                                      color: Colors.white,
-                                      size: 40,
-                                    ),
-                                    SizedBox(height: 15,),
-                                    Text(
-                                      'เมนู',
-                                      style: TextStyle(
-                                          fontSize: 19,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white
+                              SizedBox(width: wi * 0.1,),
+                              Container(
+                                width: wi * 0.35,
+                                height: hi * 0.2,
+                                child: RawMaterialButton(
+                                  onPressed: (){
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SelectShopPicUI()
+                                        )
+                                    );
+                                  },
+                                  fillColor: Color(0xff955000),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)
+                                  ),
+                                  elevation: 3.0,
+                                  child: Column(
+                                    children: const [
+                                      Icon(
+                                        FontAwesomeIcons.shop,
+                                        color: Colors.white,
+                                        size: 40,
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                padding: EdgeInsets.only(top: 25),
-                              ),
-                            ),
-                            SizedBox(width: wi * 0.1,),
-                            Container(
-                              width: wi * 0.35,
-                              height: hi * 0.2,
-                              child: RawMaterialButton(
-                                onPressed: (){},
-                                fillColor: Color(0xff955000),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)
-                                ),
-                                elevation: 3.0,
-                                child: Column(
-                                  children: const [
-                                    Icon(
-                                      FontAwesomeIcons.message,
-                                      color: Colors.white,
-                                      size: 40,
-                                    ),
-                                    SizedBox(height: 15,),
-                                    Text(
-                                      'ดู/อ่านรีวิวลูกค้า',
-                                      style: TextStyle(
-                                          fontSize: 19,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white
+                                      SizedBox(height: 15,),
+                                      Text(
+                                        'รูปร้านค้า',
+                                        style: TextStyle(
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
+                                  padding: EdgeInsets.only(top: 25),
                                 ),
-                                padding: EdgeInsets.only(top: 25),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                          SizedBox(height: wi * 0.15,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: wi * 0.35,
+                                height: hi * 0.2,
+                                child: RawMaterialButton(
+                                  onPressed: (){
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ShowManuUI()
+                                        )
+                                    );
+                                  },
+                                  fillColor: Color(0xff955000),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)
+                                  ),
+                                  elevation: 3.0,
+                                  child: Column(
+                                    children: const [
+                                      Icon(
+                                        FontAwesomeIcons.mugHot,
+                                        color: Colors.white,
+                                        size: 40,
+                                      ),
+                                      SizedBox(height: 15,),
+                                      Text(
+                                        'เมนู',
+                                        style: TextStyle(
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  padding: EdgeInsets.only(top: 25),
+                                ),
+                              ),
+                              SizedBox(width: wi * 0.1,),
+                              Container(
+                                width: wi * 0.35,
+                                height: hi * 0.2,
+                                child: RawMaterialButton(
+                                  onPressed: (){},
+                                  fillColor: Color(0xff955000),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)
+                                  ),
+                                  elevation: 3.0,
+                                  child: Column(
+                                    children: const [
+                                      Icon(
+                                        FontAwesomeIcons.message,
+                                        color: Colors.white,
+                                        size: 40,
+                                      ),
+                                      SizedBox(height: 15,),
+                                      Text(
+                                        'ดู/อ่านรีวิวลูกค้า',
+                                        style: TextStyle(
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  padding: EdgeInsets.only(top: 25),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     );
                   }).toList(),
               );

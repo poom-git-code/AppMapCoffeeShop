@@ -1,14 +1,17 @@
 import 'package:app_map_coffee_shop/models/map_coffee_shop.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app_map_coffee_shop/models/manu_coffee_shop.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/image_shop.dart';
 
-Future<bool> apiInsertLocationShop(String Idpath, String User_ID, String password, String Email, String Image, String Location_Name,
+String id_document = FirebaseAuth.instance.currentUser!.uid;
+
+Future<bool> apiInsertLocationShop(String User_ID, String password, String Email, String Image, String Location_Name,
     String Description, String Contact, String Latitude, String Longitude, String Province_ID, String Office_Hours_Open, String Office_Hours_close) async{
+
   //สร้าง object เพื่อนไปเก็บที่ firestore database
   MapCoffeeShop timeline = MapCoffeeShop(
-    id: Idpath,
     image: Image,
     userID: User_ID,
     password: password,
@@ -25,7 +28,7 @@ Future<bool> apiInsertLocationShop(String Idpath, String User_ID, String passwor
 
   //นำ object แปลงเป็น json แล้วส่งไปที่ firestore database
   try{
-    await FirebaseFirestore.instance.collection("mcs_location").doc(Idpath).set(timeline.toJson());
+    await FirebaseFirestore.instance.collection("mcs_location").doc(id_document).set(timeline.toJson());
     return true;
   }catch(ex){
     return false;
@@ -97,13 +100,14 @@ Stream<QuerySnapshot>? apiGetAllShowImageShop(){
   }
 }
 //--------------------------------------------------------------------------------------------------------
-Future<bool> apiInsertManuCoffeeShop(String manu_name, String price, String type, String Image) async{
+Future<bool> apiInsertManuCoffeeShop(String email_id, String manu_name, String price, String type, String Image) async{
   //สร้าง object เพื่อนไปเก็บที่ firestore database
   SelectManuCoffee timeline = SelectManuCoffee(
-      image: Image,
-      manuname: manu_name,
-      price: price,
-      type: type,
+    email_id: email_id,
+    image: Image,
+    manuname: manu_name,
+    price: price,
+    type: type,
   );
 
   //นำ object แปลงเป็น json แล้วส่งไปที่ firestore database
@@ -122,9 +126,10 @@ Stream<QuerySnapshot>? apiGetAllManuCoffeeShop(){
   }
 }
 //--------------------------------------------------------------------------------------------------------
-Future<bool> apiInsertManu2CoffeeShop(String manu_name, String price, String Image) async{
+Future<bool> apiInsertManu2CoffeeShop(String email_id, String manu_name, String price, String Image) async{
   //สร้าง object เพื่อนไปเก็บที่ firestore database
   SelectManuCoffee timeline = SelectManuCoffee(
+    email_id: email_id,
     image: Image,
     manuname: manu_name,
     price: price,
@@ -146,10 +151,11 @@ Stream<QuerySnapshot>? apiGetAllManu2CoffeeShop(){
   }
 }
 //--------------------------------------------------------------------------------------------------------
-Future<bool> apiUpdateManu(String id, String manu_name, String price, String type, String Image) async{
+Future<bool> apiUpdateManu(String id, String email_id, String manu_name, String price, String type, String Image) async{
   //สร้าง object เพื่อนไปเก็บที่ firestore database
 
   SelectManuCoffee manu = SelectManuCoffee(
+    email_id: email_id,
     image: Image,
     manuname: manu_name,
     price: price,
@@ -175,10 +181,11 @@ Future<bool> apiDeleteManu(String id) async{
   }
 }
 //--------------------------------------------------------------------------------------------------------
-Future<bool> apiUpdateManu2(String id, String manu_name, String price, String Image) async{
+Future<bool> apiUpdateManu2(String id, String email_id, String manu_name, String price, String Image) async{
   //สร้าง object เพื่อนไปเก็บที่ firestore database
 
   SelectManuCoffee manu = SelectManuCoffee(
+    email_id: email_id,
     image: Image,
     manuname: manu_name,
     price: price,

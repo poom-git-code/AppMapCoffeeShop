@@ -1,6 +1,7 @@
 import 'package:app_map_coffee_shop/screens/update_coffee.dart';
 import 'package:app_map_coffee_shop/screens/update_other.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../models/ShapesPainter.dart';
@@ -33,6 +34,11 @@ class _ShowManuSweetsUIState extends State<ShowManuSweetsUI> {
 
     double wi = MediaQuery.of(context).size.width;
     double hi = MediaQuery.of(context).size.height;
+    String email = FirebaseAuth.instance.currentUser!.email!;
+    final Stream<QuerySnapshot> _userStrem = FirebaseFirestore.instance
+        .collection("mcs_product2")
+        .where('email_id', isEqualTo: email)
+        .snapshots();
 
     return Scaffold(
       body: Stack(
@@ -50,7 +56,7 @@ class _ShowManuSweetsUIState extends State<ShowManuSweetsUI> {
             ),
           ),
           StreamBuilder(
-            stream: allManu,
+            stream: _userStrem,
             builder: (context, snapshot){
               if(snapshot.hasError)
               {

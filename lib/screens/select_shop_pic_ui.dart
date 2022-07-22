@@ -277,7 +277,7 @@ class _SelectShopPicUIState extends State<SelectShopPicUI> {
                             ),
                             Positioned(
                               child: Container(
-                                child: FlatButton(
+                                child: RawMaterialButton(
                                   onPressed: (){},
                                   child: Text(''),
                                 ),

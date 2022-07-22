@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -32,6 +33,7 @@ class _UpdateCoffeeState extends State<UpdateCoffee> {
 
   File? _image;
   TextEditingController manunameCtrl = TextEditingController(text: '');
+  TextEditingController email_idCtrl = TextEditingController(text: '');
   TextEditingController priceCtrl = TextEditingController(text: '');
   TextEditingController typecon = TextEditingController(text: '');
 
@@ -355,6 +357,7 @@ class _UpdateCoffeeState extends State<UpdateCoffee> {
   }
 
   updateManu() async{
+    email_idCtrl.text = FirebaseAuth.instance.currentUser!.email!;
     if(_image != null){
       String imageName = Path.basename(_image!.path);
 
@@ -367,6 +370,7 @@ class _UpdateCoffeeState extends State<UpdateCoffee> {
 
         bool resultInsertFriend = await apiUpdateManu(
             widget.id,
+            email_idCtrl.text.trim(),
             manunameCtrl.text.trim(),
             priceCtrl.text.trim(),
             dd_sale_seleted.toString(),
@@ -384,6 +388,7 @@ class _UpdateCoffeeState extends State<UpdateCoffee> {
     }else{
       bool resultInsertManu = await apiUpdateManu(
           widget.id,
+          email_idCtrl.text.trim(),
           manunameCtrl.text.trim(),
           priceCtrl.text.trim(),
           dd_sale_seleted.toString(),

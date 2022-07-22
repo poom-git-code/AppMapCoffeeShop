@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -18,6 +19,7 @@ class _SelectManu2UIState extends State<SelectManu2UI> {
 
   File? _image;
   TextEditingController manunameCtrl = TextEditingController(text: '');
+  TextEditingController email_idCtrl = TextEditingController(text: '');
   TextEditingController priceCtrl = TextEditingController();
 
   showBottomSheetForSelectImage(BuildContext context) {
@@ -342,6 +344,7 @@ class _SelectManu2UIState extends State<SelectManu2UI> {
   insertRegisterMapCoffeeShop() async{
     //อัปโหลดรูปรูปไปไว้ที่ storage ของ Firebase เพราะเราต้องการตำแหน่งรูปมาใช้เพื่อเก็บใน firestore
     //ชื่อรูป
+    email_idCtrl.text = FirebaseAuth.instance.currentUser!.email!;
     String imageName = Path.basename(_image!.path);
 
     //อัปโหลดรุปไปที่ storage ที่ firebase
@@ -353,6 +356,7 @@ class _SelectManu2UIState extends State<SelectManu2UI> {
 
       //ทำการอัปโหลดที่อยู่ของรูปพร้อมกับข้อมูลอื่นๆ โดยจะเรียกใช้ api
       bool resultInsertLocation = await apiInsertManu2CoffeeShop(
+        email_idCtrl.text.trim(),
         manunameCtrl.text.trim(),
         priceCtrl.text.trim(),
         imageUrl,

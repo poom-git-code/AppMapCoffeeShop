@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:app_map_coffee_shop/screens/show_manu_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -20,6 +21,7 @@ class _SelectManuUIState extends State<SelectManuUI> {
   File? _image;
 
   TextEditingController manunameCtrl = TextEditingController(text: '');
+  TextEditingController email_idCtrl = TextEditingController(text: '');
   TextEditingController priceCtrl = TextEditingController();
 
 
@@ -376,6 +378,7 @@ class _SelectManuUIState extends State<SelectManuUI> {
   insertRegisterMapCoffeeShop() async{
     //อัปโหลดรูปรูปไปไว้ที่ storage ของ Firebase เพราะเราต้องการตำแหน่งรูปมาใช้เพื่อเก็บใน firestore
     //ชื่อรูป
+    email_idCtrl.text = FirebaseAuth.instance.currentUser!.email!;
     String imageName = Path.basename(_image!.path);
 
     //อัปโหลดรุปไปที่ storage ที่ firebase
@@ -387,6 +390,7 @@ class _SelectManuUIState extends State<SelectManuUI> {
 
       //ทำการอัปโหลดที่อยู่ของรูปพร้อมกับข้อมูลอื่นๆ โดยจะเรียกใช้ api
       bool resultInsertLocation = await apiInsertManuCoffeeShop(
+        email_idCtrl.text.trim(),
         manunameCtrl.text.trim(),
         priceCtrl.text.trim(),
         dd_sale_seleted.toString(),
@@ -583,218 +587,12 @@ class _SelectManuUIState extends State<SelectManuUI> {
                       ],
                     ),
                   ),
-                  // Padding(
-                  //   padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.center,
-                  //     crossAxisAlignment: CrossAxisAlignment.center,
-                  //     children: [
-                  //       Checkbox(
-                  //         value: cb_hot,
-                  //         onChanged: (value_data){
-                  //           setState(() {
-                  //             cb_hot = value_data!;
-                  //             hot_enable = value_data;
-                  //             if(value_data == false){
-                  //               hotCtrl.clear();
-                  //             }
-                  //           });
-                  //         },
-                  //         activeColor: Color(0xff955000),
-                  //
-                  //       ),
-                  //       const Text(
-                  //         'ร้อน',
-                  //         style: TextStyle(
-                  //             fontWeight: FontWeight.bold,
-                  //             fontSize: 17,
-                  //             color: Color(0xff955000)
-                  //         ),
-                  //       ),
-                  //       SizedBox(width: wi * 0.1,),
-                  //       Expanded(
-                  //         child: TextField(
-                  //           scrollPadding: const EdgeInsets.all(10),
-                  //           style: const TextStyle(
-                  //             color: Colors.black,
-                  //           ),
-                  //           controller: hotCtrl,
-                  //           enabled: hot_enable,
-                  //           keyboardType: TextInputType.number,
-                  //           decoration: const InputDecoration(
-                  //             prefixIcon: Icon(
-                  //               Icons.coffee_outlined,
-                  //               color: Color(0xff955000),
-                  //             ),
-                  //             enabledBorder: UnderlineInputBorder(
-                  //                 borderSide: BorderSide(
-                  //                   color: Color(0xff955000),
-                  //                   width: 2.0,
-                  //                 )
-                  //             ),
-                  //             focusedBorder: UnderlineInputBorder(
-                  //               borderSide: BorderSide(
-                  //                   color: Color(0xff955000),
-                  //                   width: 3.0
-                  //               ),
-                  //             ),
-                  //             hintText: '0',
-                  //             hintStyle: TextStyle(
-                  //               color: Colors.grey,
-                  //             ),
-                  //             labelText: 'ราคา',
-                  //             labelStyle: TextStyle(
-                  //               color: Colors.black38,
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),// ร้อน
-                  // Padding(
-                  //   padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 6),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.center,
-                  //     crossAxisAlignment: CrossAxisAlignment.center,
-                  //     children: [
-                  //       Checkbox(
-                  //         value: cb_cool,
-                  //         onChanged: (value_data){
-                  //           setState(() {
-                  //             cb_cool = value_data!;
-                  //             cool_enable = value_data;
-                  //             if(value_data == false){
-                  //               coolCtrl.clear();
-                  //             }
-                  //           });
-                  //         },
-                  //         activeColor: Color(0xff955000),
-                  //       ),
-                  //       const Text(
-                  //         'เย็น',
-                  //         style: TextStyle(
-                  //             fontWeight: FontWeight.bold,
-                  //             fontSize: 17,
-                  //             color: Color(0xff955000)
-                  //         ),
-                  //       ),
-                  //       SizedBox(width: wi * 0.11,),
-                  //       Expanded(
-                  //         child: TextField(
-                  //           scrollPadding: const EdgeInsets.all(10),
-                  //           style: const TextStyle(
-                  //             color: Colors.black,
-                  //           ),
-                  //           controller: coolCtrl,
-                  //           enabled: cool_enable,
-                  //           keyboardType: TextInputType.number,
-                  //           decoration: const InputDecoration(
-                  //             prefixIcon: Icon(
-                  //               Icons.coffee_outlined,
-                  //               color: Color(0xff955000),
-                  //             ),
-                  //             enabledBorder: UnderlineInputBorder(
-                  //                 borderSide: BorderSide(
-                  //                   color: Color(0xff955000),
-                  //                   width: 2.0,
-                  //                 )
-                  //             ),
-                  //             focusedBorder: UnderlineInputBorder(
-                  //               borderSide: BorderSide(
-                  //                   color: Color(0xff955000),
-                  //                   width: 3.0
-                  //               ),
-                  //             ),
-                  //             hintText: '0',
-                  //             hintStyle: TextStyle(
-                  //               color: Colors.grey,
-                  //             ),
-                  //             labelText: 'ราคา',
-                  //             labelStyle: TextStyle(
-                  //               color: Colors.black38,
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),// เย็น
-                  // Padding(
-                  //   padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 6),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.center,
-                  //     crossAxisAlignment: CrossAxisAlignment.center,
-                  //     children: [
-                  //       Checkbox(
-                  //         value: cb_churn,
-                  //         onChanged: (value_data){
-                  //           setState(() {
-                  //             cb_churn = value_data!;
-                  //             churn_enable = value_data;
-                  //             if(value_data == false){
-                  //               churnCtrl.clear();
-                  //             }
-                  //           });
-                  //         },
-                  //         activeColor: Color(0xff955000),
-                  //       ),
-                  //       const Text(
-                  //         'ปั่น',
-                  //         style: TextStyle(
-                  //             fontWeight: FontWeight.bold,
-                  //             fontSize: 17,
-                  //             color: Color(0xff955000)
-                  //         ),
-                  //       ),
-                  //       SizedBox(width: wi * 0.12,),
-                  //       Expanded(
-                  //         child: TextField(
-                  //           scrollPadding: const EdgeInsets.all(10),
-                  //           style: const TextStyle(
-                  //             color: Colors.black,
-                  //           ),
-                  //           controller: churnCtrl,
-                  //           enabled: churn_enable,
-                  //           keyboardType: TextInputType.number,
-                  //           decoration: const InputDecoration(
-                  //             prefixIcon: Icon(
-                  //               Icons.coffee_outlined,
-                  //               color: Color(0xff955000),
-                  //             ),
-                  //             enabledBorder: UnderlineInputBorder(
-                  //                 borderSide: BorderSide(
-                  //                   color: Color(0xff955000),
-                  //                   width: 2.0,
-                  //                 )
-                  //             ),
-                  //             focusedBorder: UnderlineInputBorder(
-                  //               borderSide: BorderSide(
-                  //                   color: Color(0xff955000),
-                  //                   width: 3.0
-                  //               ),
-                  //             ),
-                  //             hintText: '0',
-                  //             hintStyle: TextStyle(
-                  //               color: Colors.grey,
-                  //             ),
-                  //             labelText: 'ราคา',
-                  //             labelStyle: TextStyle(
-                  //               color: Colors.black38,
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),// ปั่น
                   Padding(
                     padding: const EdgeInsets.only(right: 30, left: 30, top: 30, bottom: 50),
                     child: Container(
                       width: wi,
                       height: 50,
-                      child: Expanded(
-                        child: RaisedButton(
+                        child: RawMaterialButton(
                           onPressed: (){
                             if(manunameCtrl.text.trim().length == 0)
                             {
@@ -824,9 +622,9 @@ class _SelectManuUIState extends State<SelectManuUI> {
                                 fontSize: 20
                             ),
                           ),
-                          color: const Color(0xff955000),
+                          fillColor: const Color(0xff955000),
                         ),
-                      ),
+
                     ),
                   ),//bottom
                 ],
@@ -838,3 +636,210 @@ class _SelectManuUIState extends State<SelectManuUI> {
     );
   }
 }
+
+// Padding(
+//   padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
+//   child: Row(
+//     mainAxisAlignment: MainAxisAlignment.center,
+//     crossAxisAlignment: CrossAxisAlignment.center,
+//     children: [
+//       Checkbox(
+//         value: cb_hot,
+//         onChanged: (value_data){
+//           setState(() {
+//             cb_hot = value_data!;
+//             hot_enable = value_data;
+//             if(value_data == false){
+//               hotCtrl.clear();
+//             }
+//           });
+//         },
+//         activeColor: Color(0xff955000),
+//
+//       ),
+//       const Text(
+//         'ร้อน',
+//         style: TextStyle(
+//             fontWeight: FontWeight.bold,
+//             fontSize: 17,
+//             color: Color(0xff955000)
+//         ),
+//       ),
+//       SizedBox(width: wi * 0.1,),
+//       Expanded(
+//         child: TextField(
+//           scrollPadding: const EdgeInsets.all(10),
+//           style: const TextStyle(
+//             color: Colors.black,
+//           ),
+//           controller: hotCtrl,
+//           enabled: hot_enable,
+//           keyboardType: TextInputType.number,
+//           decoration: const InputDecoration(
+//             prefixIcon: Icon(
+//               Icons.coffee_outlined,
+//               color: Color(0xff955000),
+//             ),
+//             enabledBorder: UnderlineInputBorder(
+//                 borderSide: BorderSide(
+//                   color: Color(0xff955000),
+//                   width: 2.0,
+//                 )
+//             ),
+//             focusedBorder: UnderlineInputBorder(
+//               borderSide: BorderSide(
+//                   color: Color(0xff955000),
+//                   width: 3.0
+//               ),
+//             ),
+//             hintText: '0',
+//             hintStyle: TextStyle(
+//               color: Colors.grey,
+//             ),
+//             labelText: 'ราคา',
+//             labelStyle: TextStyle(
+//               color: Colors.black38,
+//             ),
+//           ),
+//         ),
+//       ),
+//     ],
+//   ),
+// ),// ร้อน
+// Padding(
+//   padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 6),
+//   child: Row(
+//     mainAxisAlignment: MainAxisAlignment.center,
+//     crossAxisAlignment: CrossAxisAlignment.center,
+//     children: [
+//       Checkbox(
+//         value: cb_cool,
+//         onChanged: (value_data){
+//           setState(() {
+//             cb_cool = value_data!;
+//             cool_enable = value_data;
+//             if(value_data == false){
+//               coolCtrl.clear();
+//             }
+//           });
+//         },
+//         activeColor: Color(0xff955000),
+//       ),
+//       const Text(
+//         'เย็น',
+//         style: TextStyle(
+//             fontWeight: FontWeight.bold,
+//             fontSize: 17,
+//             color: Color(0xff955000)
+//         ),
+//       ),
+//       SizedBox(width: wi * 0.11,),
+//       Expanded(
+//         child: TextField(
+//           scrollPadding: const EdgeInsets.all(10),
+//           style: const TextStyle(
+//             color: Colors.black,
+//           ),
+//           controller: coolCtrl,
+//           enabled: cool_enable,
+//           keyboardType: TextInputType.number,
+//           decoration: const InputDecoration(
+//             prefixIcon: Icon(
+//               Icons.coffee_outlined,
+//               color: Color(0xff955000),
+//             ),
+//             enabledBorder: UnderlineInputBorder(
+//                 borderSide: BorderSide(
+//                   color: Color(0xff955000),
+//                   width: 2.0,
+//                 )
+//             ),
+//             focusedBorder: UnderlineInputBorder(
+//               borderSide: BorderSide(
+//                   color: Color(0xff955000),
+//                   width: 3.0
+//               ),
+//             ),
+//             hintText: '0',
+//             hintStyle: TextStyle(
+//               color: Colors.grey,
+//             ),
+//             labelText: 'ราคา',
+//             labelStyle: TextStyle(
+//               color: Colors.black38,
+//             ),
+//           ),
+//         ),
+//       ),
+//     ],
+//   ),
+// ),// เย็น
+// Padding(
+//   padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 6),
+//   child: Row(
+//     mainAxisAlignment: MainAxisAlignment.center,
+//     crossAxisAlignment: CrossAxisAlignment.center,
+//     children: [
+//       Checkbox(
+//         value: cb_churn,
+//         onChanged: (value_data){
+//           setState(() {
+//             cb_churn = value_data!;
+//             churn_enable = value_data;
+//             if(value_data == false){
+//               churnCtrl.clear();
+//             }
+//           });
+//         },
+//         activeColor: Color(0xff955000),
+//       ),
+//       const Text(
+//         'ปั่น',
+//         style: TextStyle(
+//             fontWeight: FontWeight.bold,
+//             fontSize: 17,
+//             color: Color(0xff955000)
+//         ),
+//       ),
+//       SizedBox(width: wi * 0.12,),
+//       Expanded(
+//         child: TextField(
+//           scrollPadding: const EdgeInsets.all(10),
+//           style: const TextStyle(
+//             color: Colors.black,
+//           ),
+//           controller: churnCtrl,
+//           enabled: churn_enable,
+//           keyboardType: TextInputType.number,
+//           decoration: const InputDecoration(
+//             prefixIcon: Icon(
+//               Icons.coffee_outlined,
+//               color: Color(0xff955000),
+//             ),
+//             enabledBorder: UnderlineInputBorder(
+//                 borderSide: BorderSide(
+//                   color: Color(0xff955000),
+//                   width: 2.0,
+//                 )
+//             ),
+//             focusedBorder: UnderlineInputBorder(
+//               borderSide: BorderSide(
+//                   color: Color(0xff955000),
+//                   width: 3.0
+//               ),
+//             ),
+//             hintText: '0',
+//             hintStyle: TextStyle(
+//               color: Colors.grey,
+//             ),
+//             labelText: 'ราคา',
+//             labelStyle: TextStyle(
+//               color: Colors.black38,
+//             ),
+//           ),
+//         ),
+//       ),
+//     ],
+//   ),
+// ),// ปั่น
+
