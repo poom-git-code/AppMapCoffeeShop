@@ -1,7 +1,6 @@
 import 'package:app_map_coffee_shop/models/map_coffee_shop.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app_map_coffee_shop/models/manu_coffee_shop.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/image_shop.dart';
 
@@ -208,5 +207,12 @@ Future<bool> apiDeleteManu2(String id) async{
   }
 }
 //--------------------------------------------------------------------------------------------------------
-
-
+Future<bool> apiDeleteImage(String id) async{
+  try{
+    await FirebaseFirestore.instance.collection('mcs_imagesShop').doc(id).delete();
+    return true;
+  }catch(ex){
+    return false;
+  }
+}
+//--------------------------------------------------------------------------------------------------------

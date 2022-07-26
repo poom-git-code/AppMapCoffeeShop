@@ -30,6 +30,7 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
 
   TextEditingController usernameCtrl = TextEditingController(text: '');
   TextEditingController passwordCtrl = TextEditingController(text: '');
+  TextEditingController confirmpasswordCtrl = TextEditingController(text: '');
   TextEditingController emailCtrl = TextEditingController(text: '');
   TextEditingController shopnameCtrl = TextEditingController(text: '');
   TextEditingController descriptitonCtrl = TextEditingController(text: '');
@@ -574,11 +575,11 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
                               width: 3.0
                           ),
                         ),
-                        hintText: 'jussoca',
+                        hintText: 'ใส่ชื่อผู้ใช้',
                         hintStyle: TextStyle(
                           color: Colors.grey,
                         ),
-                        labelText: 'ชื่อผู้ใช้',
+                        labelText: 'ชื่อผู้ใช้   ',
                         labelStyle: TextStyle(
                           color: Colors.black38,
                         ),
@@ -611,7 +612,7 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
                               width: 3.0
                           ),
                         ),
-                        hintText: 'jussoca123456789',
+                        hintText: 'ใส่รหัสผ่าน',
                         hintStyle: const TextStyle(
                           color: Colors.grey,
                         ),
@@ -633,6 +634,54 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
                       ),
                     ),
                   ),//password
+                  Padding(
+                    padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
+                    child: TextField(
+                      obscureText: !pwValue,
+                      style: const TextStyle(
+                        color: Colors.black,
+                      ),
+                      scrollPadding: const EdgeInsets.all(10),
+                      controller: confirmpasswordCtrl,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(
+                          Icons.lock_rounded,
+                          color: Color(0xff955000),
+                        ),
+                        enabledBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color(0xff955000),
+                              width: 2.0,
+                            )
+                        ),
+                        focusedBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Color(0xff955000),
+                              width: 3.0
+                          ),
+                        ),
+                        hintText: 'ใส่รหัสผ่าน',
+                        hintStyle: const TextStyle(
+                          color: Colors.grey,
+                        ),
+                        labelText: 'ยืนยันรหัสผ่าน',
+                        labelStyle: const TextStyle(
+                          color: Colors.black38,
+                        ),
+                        suffixIcon: IconButton(
+                          onPressed: (){
+                            setState(() {
+                              pwValue = !pwValue;
+                            });
+                          },
+                          icon: Icon(
+                            pwValue ? Icons.visibility : Icons.visibility_off,
+                            color: const Color(0xff5C5C5C),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),//confirmpassword
                   Padding(
                     padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
                     child: TextField(
@@ -658,7 +707,7 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
                               width: 3.0
                           ),
                         ),
-                        hintText: 'sunny@hotmail.com',
+                        hintText: 'ใส่อีเมล',
                         hintStyle: TextStyle(
                           color: Colors.grey,
                         ),
@@ -695,7 +744,7 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
                               width: 3.0
                           ),
                         ),
-                        hintText: 'Homu cafe',
+                        hintText: 'ใส่ชื่อร้าน',
                         hintStyle: TextStyle(
                           color: Colors.grey,
                         ),
@@ -731,7 +780,7 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
                               width: 3.0
                           ),
                         ),
-                        hintText: 'สไตล์ธรรมชาติ',
+                        hintText: 'ใส่สไตล์ร้าน',
                         hintStyle: TextStyle(
                           color: Colors.grey,
                         ),
@@ -767,7 +816,7 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
                               width: 3.0
                           ),
                         ),
-                        hintText: '020300568',
+                        hintText: 'ใส่เบอร์โทร',
                         hintStyle: TextStyle(
                           color: Colors.grey,
                         ),
@@ -1047,7 +1096,7 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
                               width: 3.0
                           ),
                         ),
-                        hintText: '10160',
+                        hintText: 'ใส่รหัสไปรษณี',
                         hintStyle: TextStyle(
                           color: Colors.grey,
                         ),
@@ -1066,8 +1115,11 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
                         if(usernameCtrl.text.trim().length == 0){
                           showWarningDialog('กรุณาใส่รหัสผู้ใช้ด้วย!!!');
                         }
-                        else if(passwordCtrl.text.trim().length == 0){
+                        else if(passwordCtrl.text.trim().length == 0 && confirmpasswordCtrl.text.trim().length == 0){
                           showWarningDialog('กรุณาใสรหัสผ่านด้วย!!!');
+                        }
+                        else if(passwordCtrl.text.trim().length != confirmpasswordCtrl.text.trim().length){
+                          showWarningDialog('รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน');
                         }
                         else if(emailCtrl.text.trim().length == 0){
                           showWarningDialog('กรุณาใสอีเมล์ด้วย!!!');

@@ -2,6 +2,7 @@ import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:app_map_coffee_shop/screens/delete_images.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -337,16 +338,37 @@ class _SelectShopPicUIState extends State<SelectShopPicUI> {
                 padding: EdgeInsets.all(4),
                 child: GridView.builder(
                   itemCount: (snapshot.data! as QuerySnapshot).docs.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2
                   ),
                   itemBuilder: (context, index){
-                    return Container(
-                      margin: EdgeInsets.all(3),
-                      child: FadeInImage.memoryNetwork(
-                        fit: BoxFit.cover,
-                        placeholder: kTransparentImage,
-                        image: (snapshot.data! as QuerySnapshot).docs[index].get('url'),
+                    return GridTile(
+                      child: Padding(
+                        padding: EdgeInsets.all(3.0),
+                        child: FadeInImage.memoryNetwork(
+                          fit: BoxFit.cover,
+                          placeholder: kTransparentImage,
+                          image: (snapshot.data! as QuerySnapshot).docs[index].get('url'),
+                        ),
+                      ),
+                      footer: Container(
+                        width: wi,
+                        height: hi,
+                        child: TextButton(
+                          onPressed: (){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DeleteImage(
+                                  (snapshot.data! as QuerySnapshot).docs[index].id.toString(),
+                                  (snapshot.data! as QuerySnapshot).docs[index]['Email'],
+                                  (snapshot.data! as QuerySnapshot).docs[index]['url'],
+                                )
+                              )
+                            );
+                          },
+                          child: Text(''),
+                        ),
                       ),
                     );
                   },

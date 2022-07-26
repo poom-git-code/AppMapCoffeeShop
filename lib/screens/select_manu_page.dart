@@ -1,4 +1,3 @@
-import 'package:app_map_coffee_shop/screens/register_ui.dart';
 import 'package:app_map_coffee_shop/screens/select_manu2_ui.dart';
 import 'package:app_map_coffee_shop/screens/select_manu_ui.dart';
 import 'package:flutter/material.dart';

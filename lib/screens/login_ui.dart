@@ -1,7 +1,6 @@
 import 'package:app_map_coffee_shop/screens/forgot_password_ui.dart';
 import 'package:app_map_coffee_shop/screens/home_ui.dart';
 import 'package:app_map_coffee_shop/screens/register_shop_ui.dart';
-import 'package:app_map_coffee_shop/screens/register_ui.dart';
 import 'package:app_map_coffee_shop/servers/api_map_coffee_shop.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
