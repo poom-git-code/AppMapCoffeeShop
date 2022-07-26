@@ -5,10 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/image_shop.dart';
 
-String id_document = FirebaseAuth.instance.currentUser!.uid;
-
 Future<bool> apiInsertLocationShop(String User_ID, String password, String Email, String Image, String Location_Name,
-    String Description, String Contact, String Latitude, String Longitude, String Province_ID, String Office_Hours_Open, String Office_Hours_close) async{
+    String Description, String Contact, double Latitude, double Longitude, String Province_ID, String Office_Hours_Open, String Office_Hours_close) async{
 
   //สร้าง object เพื่อนไปเก็บที่ firestore database
   MapCoffeeShop timeline = MapCoffeeShop(
@@ -28,7 +26,7 @@ Future<bool> apiInsertLocationShop(String User_ID, String password, String Email
 
   //นำ object แปลงเป็น json แล้วส่งไปที่ firestore database
   try{
-    await FirebaseFirestore.instance.collection("mcs_location").doc(id_document).set(timeline.toJson());
+    await FirebaseFirestore.instance.collection("mcs_location").add(timeline.toJson());
     return true;
   }catch(ex){
     return false;
@@ -43,7 +41,7 @@ Stream<QuerySnapshot>? apiGetAllLocation(){
 }
 //-------------------------------------------------------------------------------------------------------
 Future<bool> apiUpdateLocationShop(String id, String User_ID, String password, String Email, String Image, String Location_Name,
-    String Description, String Contact, String Latitude, String Longitude, String Province_ID, String Office_Hours_Open, String Office_Hours_close) async{
+    String Description, String Contact, double Latitude, double Longitude, String Province_ID, String Office_Hours_Open, String Office_Hours_close) async{
   //สร้าง object เพื่อนไปเก็บที่ firestore database
   MapCoffeeShop timeline = MapCoffeeShop(
       image: Image,

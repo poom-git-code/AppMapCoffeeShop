@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:app_map_coffee_shop/models/map_coffee_shop.dart';
 import 'package:app_map_coffee_shop/screens/map_regis_ui.dart';
+import 'package:app_map_coffee_shop/screens/map_update_register.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +25,8 @@ class UpdateRegister extends StatefulWidget {
   String? Contact;
   String? Office_Hours_Open;
   String? Office_Hours_close;
-  String? Longitude;
-  String? Latitude;
+  double Longitude;
+  double Latitude;
   String? Province_ID;
 
   UpdateRegister(
@@ -53,6 +54,8 @@ class _UpdateRegisterState extends State<UpdateRegister> {
   File? _image;
   TimeOfDay? time_open;
   TimeOfDay? time_close;
+  double? latitude;
+  double? longitude;
 
   MapCoffeeShop mapCoffeeShop = MapCoffeeShop();
 
@@ -455,8 +458,8 @@ class _UpdateRegisterState extends State<UpdateRegister> {
             shopnameCtrl.text.trim(),
             descriptitonCtrl.text.trim(),
             contactCtrl.text.trim(),
-            latitudeCtrl.text.trim(),
-            longitudeCtrl.text.trim(),
+            latitude!,
+            longitude!,
             provinceCtrl.text.trim(),
             timeopenCtrl.text.trim(),
             timecloseCtrl.text.trim()
@@ -482,8 +485,8 @@ class _UpdateRegisterState extends State<UpdateRegister> {
           shopnameCtrl.text.trim(),
           descriptitonCtrl.text.trim(),
           contactCtrl.text.trim(),
-          latitudeCtrl.text.trim(),
-          longitudeCtrl.text.trim(),
+          latitude!,
+          longitude!,
           provinceCtrl.text.trim(),
           timeopenCtrl.text.trim(),
           timecloseCtrl.text.trim()
@@ -511,10 +514,13 @@ class _UpdateRegisterState extends State<UpdateRegister> {
     contactCtrl.text = widget.Contact!;
     timeopenCtrl.text = widget.Office_Hours_Open!;
     timecloseCtrl.text = widget.Office_Hours_close!;
-    latitudeCtrl.text = widget.Latitude!;
-    longitudeCtrl.text = widget.Longitude!;
+    latitude = widget.Latitude;
+    longitude = widget.Longitude;
     provinceCtrl.text = widget.Province_ID!;
 
+
+    latitudeCtrl.text = '$latitude';
+    longitudeCtrl.text = '$longitude';
     // TODO: implement initState
     super.initState();
   }
@@ -916,17 +922,27 @@ class _UpdateRegisterState extends State<UpdateRegister> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MapRegisUI(
-
+                                builder: (context) => MapUpdateRegister(
+                                    widget.id,
+                                    usernameCtrl.text.trim(),
+                                    passwordCtrl.text.trim(),
+                                    emailCtrl.text.trim(),
+                                    widget.Image,
+                                    shopnameCtrl.text.trim(),
+                                    descriptitonCtrl.text.trim(),
+                                    contactCtrl.text.trim(),
+                                    timeopenCtrl.text.trim(),
+                                    timecloseCtrl.text.trim(),
+                                    latitude!,
+                                    longitude!,
+                                    provinceCtrl.text.trim()
                                 )
                             )
                         ).then((value){
-                          latitudeCtrl.text = '';
-                          longitudeCtrl.text = '';
-                          lat = value[0];
-                          lng = value[1];
-                          latitudeCtrl.text = lat;
-                          longitudeCtrl.text = lng;
+                          latitude = value[0];
+                          longitude = value[1];
+                          latitudeCtrl.text = '$latitude';
+                          longitudeCtrl.text = '$longitude';
                         });
                       },
                       style: ElevatedButton.styleFrom(

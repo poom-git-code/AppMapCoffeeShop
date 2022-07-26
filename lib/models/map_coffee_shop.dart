@@ -1,5 +1,4 @@
 class MapCoffeeShop {
-  String? _id;
   String? _image;
   String? _userID;
   String? _password;
@@ -9,13 +8,12 @@ class MapCoffeeShop {
   String? _contact;
   String? _officeHoursOpen;
   String? _officeHoursClose;
-  String? _latitude;
-  String? _longitude;
+  double? _latitude;
+  double? _longitude;
   String? _provinceID;
 
   MapCoffeeShop(
       {
-        String? id,
         String? image,
         String? userID,
         String? password,
@@ -25,14 +23,11 @@ class MapCoffeeShop {
         String? contact,
         String? officeHoursOpen,
         String? officeHoursClose,
-        String? latitude,
-        String? longitude,
+        double? latitude,
+        double? longitude,
         String? provinceID
       }) {
 
-    if (id != null) {
-      this._id = id;
-    }
     if (image != null) {
       this._image = image;
     }
@@ -71,8 +66,6 @@ class MapCoffeeShop {
     }
   }
 
-  String? get id => _id;
-  set id(String? id) => _id = id;
   String? get image => _image;
   set image(String? image) => _image = image;
   String? get userID => _userID;
@@ -93,15 +86,14 @@ class MapCoffeeShop {
   String? get officeHoursClose => _officeHoursClose;
   set officeHoursClose(String? officeHoursClose) =>
       _officeHoursClose = officeHoursClose;
-  String? get latitude => _latitude;
-  set address(String? address) => _latitude = address;
-  String? get longitude => _longitude;
-  set longitude(String? address) => _longitude = address;
+  double? get latitude => _latitude;
+  set address(double? latitude) => _latitude = latitude;
+  double? get longitude => _longitude;
+  set longitude(double? longitude) => _longitude = longitude;
   String? get provinceID => _provinceID;
   set provinceID(String? provinceID) => _provinceID = provinceID;
 
   MapCoffeeShop.fromJson(Map<String, dynamic> json) {
-    _id = json['Id'];
     _image = json['Image'];
     _userID = json['User_ID'];
     _password = json['password'];
@@ -118,7 +110,6 @@ class MapCoffeeShop {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['Id'] = this._id;
     data['Image'] = this._image;
     data['User_ID'] = this._userID;
     data['password'] = this._password;

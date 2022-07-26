@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:app_map_coffee_shop/screens/location_search_dialogue.dart';
+import 'package:app_map_coffee_shop/screens/register_shop_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -139,6 +139,7 @@ class _MapRegisUIState extends State<MapRegisUI> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
 
@@ -181,7 +182,7 @@ class _MapRegisUIState extends State<MapRegisUI> {
                 myLocationButtonEnabled: true,
                 mapToolbarEnabled: true,
                 onTap: (location) {
-                  x = [location.latitude.toString(),location.longitude.toString()];
+                  x = [location.latitude.toDouble(), location.longitude.toDouble()];
 
                   setState((){
                     gooMarker.add(

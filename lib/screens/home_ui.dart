@@ -76,14 +76,12 @@ class _HomeUIState extends State<HomeUI> {
                       child: ElevatedButton(
                         onPressed: () {
                           auth.signOut().then((value){
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) {
-                                      return LoginUI();
-                                    }
-                                )
-                            );
+                            Navigator.pushAndRemoveUntil(
+                                context, MaterialPageRoute(
+                                builder: (context){
+                                  return LoginUI();
+                                }
+                            ), (route) => false);
                           });
                         },
                         style: ElevatedButton.styleFrom(
@@ -137,7 +135,6 @@ class _HomeUIState extends State<HomeUI> {
 
     double wi = MediaQuery.of(context).size.width;
     double hi = MediaQuery.of(context).size.height;
-    String id = FirebaseAuth.instance.currentUser!.uid;
     String email = FirebaseAuth.instance.currentUser!.email!;
     final Stream<QuerySnapshot> _userStrem = FirebaseFirestore.instance
         .collection("mcs_location")
@@ -225,7 +222,7 @@ class _HomeUIState extends State<HomeUI> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => UpdateRegister(
-                                                id.toString(),
+                                                document.id,
                                                 data['User_ID'],
                                                 data['Image'],
                                                 data['Email'],

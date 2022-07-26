@@ -1,18 +1,22 @@
+import 'dart:ffi';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:app_map_coffee_shop/models/ShapesPainter.dart';
 import 'package:path/path.dart' as Path;
+import 'package:transparent_image/transparent_image.dart';
+import '../models/data_holder.dart';
 import '../servers/api_map_coffee_shop.dart';
+import 'add_image.dart';
 
 class SelectShopPicUI extends StatefulWidget {
-  SelectShopPicUI({Key? key}) : super(key: key);
 
   @override
   State<SelectShopPicUI> createState() => _SelectShopPicUIState();
@@ -23,6 +27,7 @@ class _SelectShopPicUIState extends State<SelectShopPicUI> {
   File? _image;
   final ImagePicker _picker = ImagePicker();
   List<XFile> _imageList = [];
+  int index = 0;
 
   showBottomSheetForSelectImage(BuildContext context) {
     showModalBottomSheet(
@@ -97,23 +102,23 @@ class _SelectShopPicUIState extends State<SelectShopPicUI> {
   Future<List<String>> multiImageUploader(List<XFile> list) async{
     List<String> _path = [];
     for(XFile _image in list){
-      _path.add(await UploadImageCoffeeShop(_image));
+      _path.add(await InsetsImageCoffeeShop(_image));
     }
     return _path;
   }
 
-  UploadImageCoffeeShop(XFile image) async{
+  InsetsImageCoffeeShop(XFile image) async{
 
     //อัปโหลดรูปรูปไปไว้ที่ storage ของ Firebase เพราะเราต้องการตำแหน่งรูปมาใช้เพื่อเก็บใน firestore
     //ชื่อรูป
-    String imageName = Path.basename(_image!.path);
+    String imageName = Path.basename(image.path);
 
     //อัปโหลดรุปไปที่ storage ที่ firebase
     Reference ref =  FirebaseStorage.instance.ref().child('Picture_multipicture_tb/' + imageName);
     UploadTask uploadTask = ref.putFile(_image!);
     //เมื่ออัปโหลดรูปเสร็จเราจะได้ที่อยู่ของรูป แล้วเราก็จะส่งที่อยู่อยู่ของรูปไปพร้อมกับข้อมูลอื่นๆ ไปเก็บที่ Firestore Database ของ Firebase
     uploadTask.whenComplete(() async{
-      String imageUrl = await ref.getDownloadURL();
+      String imageUrl = (await ref.getDownloadURL());
 
       //ทำการอัปโหลดที่อยู่ของรูปพร้อมกับข้อมูลอื่นๆ โดยจะเรียกใช้ api
       bool resultInsertLocation = await apiInsertImageShop(
@@ -204,17 +209,44 @@ class _SelectShopPicUIState extends State<SelectShopPicUI> {
     );
   }
 
+  // Widget makeImagesGrid(){
+  //   return GridView.builder(
+  //     itemCount: 30,
+  //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+  //     itemBuilder: (context, index){
+  //       return GridTile(
+  //         child: ImageGridItem(index+1),
+  //         header: Padding(
+  //           padding: EdgeInsets.only(left: 170),
+  //           child: IconButton(
+  //             onPressed: (){},
+  //             icon: const Icon(
+  //               FontAwesomeIcons.trash,
+  //               color: Colors.red,
+  //               size: 15,
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     }
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
 
     double wi = MediaQuery.of(context).size.width;
     double hi = MediaQuery.of(context).size.height;
+    String email = FirebaseAuth.instance.currentUser!.email!;
+    final Stream<QuerySnapshot> _userStrem = FirebaseFirestore.instance
+        .collection("mcs_imagesShop")
+        .where('Email', isEqualTo: email)
+        .snapshots();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Pictures',
+          'รูปภาพ',
           style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 23,
@@ -223,18 +255,17 @@ class _SelectShopPicUIState extends State<SelectShopPicUI> {
         ),
         centerTitle: true,
         backgroundColor: const Color(0xffFFA238),
-        actions: [
-          IconButton(
-            onPressed: (){
-              showBottomSheetForSelectImage(context);
-            },
-            icon: Icon(
-              FontAwesomeIcons.images,
-              color: Color(0xff955000),
-            ),
-          ),
-          SizedBox(width: 10,),
-        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: (){
+          Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (context) => AddImage()
+              )
+          );
+        },
+        backgroundColor: Color(0xff955000),
       ),
       body: Stack(
         children: [
@@ -250,62 +281,166 @@ class _SelectShopPicUIState extends State<SelectShopPicUI> {
               painter: ShapesPainter(),
             ),
           ),
-          SafeArea(
-            child: Column(
-              children: [
-                OutlinedButton(
-                  onPressed: (){
-                    multiImageUploader(_imageList);
-                  },
-                  child: Text('บักทึกรูปภาพ'),
-                ),
-                Expanded(
-                  child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3
-                    ),
-                    itemCount: _imageList.length,
-                    itemBuilder: (BuildContext context, int index){
-                      return Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            Image.file(
-                              File(_imageList[index].path),
-                              fit: BoxFit.cover,
-                            ),
-                            Positioned(
-                              child: Container(
-                                child: RawMaterialButton(
-                                  onPressed: (){},
-                                  child: Text(''),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      );
-                    },
+          // SafeArea(
+          //   child: Column(
+          //     children: [
+          //       OutlinedButton(
+          //         onPressed: (){
+          //           multiImageUploader(_imageList);
+          //         },
+          //         child: Text('บักทึกรูปภาพ'),
+          //       ),
+          //       Expanded(
+          //         child: GridView.builder(
+          //           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          //               crossAxisCount: 2
+          //           ),
+          //           itemCount: _imageList.length,
+          //           itemBuilder: (BuildContext context, int index){
+          //             return Padding(
+          //               padding: const EdgeInsets.all(2.0),
+          //               child: Stack(
+          //                 fit: StackFit.expand,
+          //                 children: [
+          //                   Image.file(
+          //                     File(_imageList[index].path),
+          //                     fit: BoxFit.cover,
+          //                   ),
+          //                   Positioned(
+          //                     child: Container(
+          //                       child: RawMaterialButton(
+          //                         onPressed: (){},
+          //                         child: Text(''),
+          //                       ),
+          //                     ),
+          //                   )
+          //                 ],
+          //               ),
+          //             );
+          //           },
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          // Container(
+          //   child: makeImagesGrid(),
+          // ),
+          StreamBuilder(
+            stream: _userStrem,
+            builder: (context, snapshot){
+              return !snapshot.hasData
+              ? const Center(
+                child: CircularProgressIndicator(),
+              )
+              : Container(
+                padding: EdgeInsets.all(4),
+                child: GridView.builder(
+                  itemCount: (snapshot.data! as QuerySnapshot).docs.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2
                   ),
+                  itemBuilder: (context, index){
+                    return Container(
+                      margin: EdgeInsets.all(3),
+                      child: FadeInImage.memoryNetwork(
+                        fit: BoxFit.cover,
+                        placeholder: kTransparentImage,
+                        image: (snapshot.data! as QuerySnapshot).docs[index].get('url'),
+                      ),
+                    );
+                  },
                 ),
-              ],
-            ),
+              );
+            },
           ),
-
-
         ],
       ),
     );
 
   }
-  // void imageselect() async{
-  //   final XFile? selecterImage = await _picker.pickImage(source: ImageSource.camera);
-  //   if(selecterImage!.path.isNotEmpty)
-  //   {
-  //     _imageList.add(selecterImage);
-  //   }
-  //
-  //   setState(() {});
-  // }
+
+// void imageselect() async{
+//   final XFile? selecterImage = await _picker.pickImage(source: ImageSource.camera);
+//   if(selecterImage!.path.isNotEmpty)
+//   {
+//     _imageList.add(selecterImage);
+//   }
+//
+//   setState(() {});
+// }
 }
+
+
+// class ImageGridItem extends StatefulWidget {
+//
+//   int? _index;
+//
+//   ImageGridItem(int index){
+//     this._index = index;
+//
+//   }
+//
+//   @override
+//   State<ImageGridItem> createState() => _ImageGridItemState();
+// }
+//
+// class _ImageGridItemState extends State<ImageGridItem> {
+//
+//   Uint8List? imageFile;
+//   Reference photosReference = FirebaseStorage.instance.ref().child('Picture_multipicture_tb');
+//
+//   getImage(){
+//     if(!requiredIndexes.contains(widget._index)){
+//       int MAX_SIZE = 7 * 1024 * 1024;
+//       //.child("image_${widget._index}.jpg")
+//       photosReference.child("image_${widget._index}.jpg").getData(MAX_SIZE).then((data){
+//         setState((){
+//           imageFile = data!;
+//         });
+//         imageDate.putIfAbsent(widget._index!, (){
+//           return data!;
+//         });
+//       }).catchError((Error){
+//         debugPrint(Error.toString());
+//       });
+//       requiredIndexes.add(widget._index!);
+//     }
+//   }
+//
+//   Widget decideGridTileWidget(){
+//     if(imageFile == null){
+//       return Center(
+//         child: Stack(
+//           children: const [
+//             Text('ไม่มีรูปภาพ'),
+//           ],
+//         ),
+//       );
+//     }
+//     else{
+//       return Image.memory(imageFile!, fit: BoxFit.cover,);
+//     }
+//   }
+//
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     super.initState();
+//     if(!imageDate.containsKey(widget._index)){
+//       getImage();
+//     }else{
+//       setState(() {
+//         imageFile = imageDate[widget._index];
+//       });
+//     }
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//
+//     return GridTile(
+//       child: decideGridTileWidget(),
+//     );
+//   }
+// }

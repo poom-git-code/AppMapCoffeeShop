@@ -12,7 +12,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as Path;
 
 class RegisterShopUI extends StatefulWidget {
-  const RegisterShopUI({Key? key}) : super(key: key);
 
   @override
   State<RegisterShopUI> createState() => _RegisterShopUIState();
@@ -24,6 +23,8 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
   bool pwValue = false;
   TimeOfDay? time_open;
   TimeOfDay? time_close;
+  double? latitude;
+  double? longitude;
 
   MapCoffeeShop mapCoffeeShop = MapCoffeeShop();
 
@@ -434,8 +435,8 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
             shopnameCtrl.text.trim(),
             descriptitonCtrl.text.trim(),
             contactCtrl.text.trim(),
-            latitudeCtrl.text.trim(),
-            longitudeCtrl.text.trim(),
+            latitude!,
+            longitude!,
             provinceCtrl.text.trim(),
             timeopenCtrl.text.trim(),
             timecloseCtrl.text.trim()
@@ -475,9 +476,6 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
 
     double wi = MediaQuery.of(context).size.width;
     double hi = MediaQuery.of(context).size.height;
-
-    String lat = '';
-    String lng = '';
 
     return Scaffold(
       appBar: AppBar(
@@ -916,10 +914,13 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
                                   builder: (context) => MapRegisUI()
                               )
                           ).then((value){
-                            lat = value[0];
-                            lng = value[1];
-                            latitudeCtrl.text = lat;
-                            longitudeCtrl.text = lng;
+                            // lat = value[0];
+                            // lng = value[1];
+                            latitude = value[0];
+                            longitude = value[1];
+                            latitudeCtrl.text = '$latitude';
+                            longitudeCtrl.text = '$longitude';
+
                           });
                         },
                         style: ElevatedButton.styleFrom(
@@ -1086,9 +1087,9 @@ class _RegisterShopUIState extends State<RegisterShopUI> {
                         else if(time_close == null){
                           showWarningDialog('กรุณาใส่เวลาปิดร้านด้วย!!!');
                         }
-                        else if(latitudeCtrl.text.trim().length == 0){
-                          showWarningDialog('กรุณาใส่ตำแหน่งด้วย!!!');
-                        }
+                        // else if(latitudeCtrl.text.trim().length == 0){
+                        //   showWarningDialog('กรุณาใส่ตำแหน่งด้วย!!!');
+                        // }
                         else if(provinceCtrl.text.trim().length == 0){
                           showWarningDialog('กรุณาใส่รหัสไปรษณีด้วย!!!');
                         }
