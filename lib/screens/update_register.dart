@@ -57,7 +57,7 @@ class _UpdateRegisterState extends State<UpdateRegister> {
   double? latitude;
   double? longitude;
 
-  MapCoffeeShop mapCoffeeShop = MapCoffeeShop();
+  // MapCoffeeShop mapCoffeeShop = MapCoffeeShop();
 
   TextEditingController usernameCtrl = TextEditingController(text: '');
   TextEditingController passwordCtrl = TextEditingController(text: '');

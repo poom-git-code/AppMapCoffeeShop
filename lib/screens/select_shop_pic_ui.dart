@@ -51,7 +51,7 @@ class _SelectShopPicUIState extends State<SelectShopPicUI> {
                       showSelectImageFromCamera();
                     },
                     style: TextButton.styleFrom(
-                      primary: Color(0xff955000),
+                      backgroundColor: Color(0xff955000),
                     ),
                     icon: const Icon(Icons.camera_alt),
                     label: const Text('กล้อง'),

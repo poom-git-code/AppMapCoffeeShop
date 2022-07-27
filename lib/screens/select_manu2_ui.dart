@@ -532,38 +532,38 @@ class _SelectManu2UIState extends State<SelectManu2UI> {
                     child: Container(
                       width: wi,
                       height: 50,
-                      child: Expanded(
-                        child: RaisedButton(
-                          onPressed: (){
-                            if(manunameCtrl.text.trim().length == 0)
-                            {
-                              showWarningDialog('กรุณาใส่ชื่อเมนูด้วย!!!');
-                            }
-                            else if(_image == null)
-                            {
-                              showWarningDialog('กรุณาใส่รูปด้วย!!!');
-                            }
-                            else if(priceCtrl.text.trim().length == 0)
-                            {
-                              showWarningDialog('กรุณาใส่ราคาเมนูด้วย!!!');
-                            }
-                            else
-                            {
-                              showConfirmInsertDialog();
-                            }
-                          },
+                      child: ElevatedButton(
+                        onPressed: (){
+                          if(manunameCtrl.text.trim().length == 0)
+                          {
+                            showWarningDialog('กรุณาใส่ชื่อเมนูด้วย!!!');
+                          }
+                          else if(_image == null)
+                          {
+                            showWarningDialog('กรุณาใส่รูปด้วย!!!');
+                          }
+                          else if(priceCtrl.text.trim().length == 0)
+                          {
+                            showWarningDialog('กรุณาใส่ราคาเมนูด้วย!!!');
+                          }
+                          else
+                          {
+                            showConfirmInsertDialog();
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)
                           ),
-                          child: const Text(
-                            'เพิ่มเมนู',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20
-                            ),
+                          backgroundColor: Color(0xff955000),
+                        ),
+                        child: const Text(
+                          'เพิ่มเมนู',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20
                           ),
-                          color: const Color(0xff955000),
                         ),
                       ),
                     ),

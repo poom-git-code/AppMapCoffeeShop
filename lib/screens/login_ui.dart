@@ -292,7 +292,7 @@ class _LoginUIState extends State<LoginUI> {
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10)
                                   ),
-                                  primary: const Color(0xff955000),
+                                  backgroundColor: const Color(0xff955000),
                                 ),
                                 child: const Text(
                                   'เข้าสู่ระบบ',
@@ -324,7 +324,7 @@ class _LoginUIState extends State<LoginUI> {
                                 ),
                               ),
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.transparent
+                                backgroundColor: Colors.transparent
                               ),
                             ),
                           ),

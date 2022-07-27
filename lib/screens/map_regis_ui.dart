@@ -212,7 +212,7 @@ class _MapRegisUIState extends State<MapRegisUI> {
                           borderRadius: BorderRadius.circular(10)
                       ),
                       fixedSize: Size(170, 50.0),
-                      primary: const Color(0xff955000),
+                      backgroundColor: const Color(0xff955000),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

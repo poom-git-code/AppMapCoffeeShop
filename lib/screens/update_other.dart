@@ -753,7 +753,7 @@ class _UpdateOtherState extends State<UpdateOther> {
                       width: wi,
                       height: 50,
                       child: Expanded(
-                        child: RaisedButton(
+                        child: ElevatedButton(
                           onPressed: (){
                             if(manunameCtrl.text.trim().length == 0)
                             {
@@ -768,9 +768,7 @@ class _UpdateOtherState extends State<UpdateOther> {
                               showConfirmUpdateDialog();
                             }
                           },
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)
-                          ),
+
                           child: const Text(
                             'แก้ไข',
                             style: TextStyle(
@@ -779,7 +777,12 @@ class _UpdateOtherState extends State<UpdateOther> {
                                 fontSize: 20
                             ),
                           ),
-                          color: const Color(0xff955000),
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)
+                            ),
+                            backgroundColor: Color(0xff955000),
+                          ),
                         ),
                       ),
                     ),
@@ -790,13 +793,11 @@ class _UpdateOtherState extends State<UpdateOther> {
                       width: wi,
                       height: 50,
                       child: Expanded(
-                        child: RaisedButton(
+                        child: ElevatedButton(
                           onPressed: (){
                             showConfirmDeleteDialog();
                           },
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)
-                          ),
+
                           child: const Text(
                             'ลบ',
                             style: TextStyle(
@@ -805,7 +806,12 @@ class _UpdateOtherState extends State<UpdateOther> {
                                 fontSize: 20
                             ),
                           ),
-                          color: const Color(0x99955000),
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)
+                            ),
+                            backgroundColor: Color(0x99955000),
+                          ),
                         ),
                       ),
                     ),
