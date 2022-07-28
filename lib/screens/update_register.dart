@@ -6,7 +6,9 @@ import 'package:app_map_coffee_shop/screens/map_update_register.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:app_map_coffee_shop/models/ShapesPainter.dart';
 import 'package:app_map_coffee_shop/servers/api_map_coffee_shop.dart';
@@ -530,8 +532,6 @@ class _UpdateRegisterState extends State<UpdateRegister> {
 
     double wi = MediaQuery.of(context).size.width;
     double hi = MediaQuery.of(context).size.height;
-    String lat = '';
-    String lng = '';
 
     // String email = FirebaseAuth.instance.currentUser!.email!;
     // final Stream<QuerySnapshot> _userStrem = FirebaseFirestore.instance
@@ -727,42 +727,6 @@ class _UpdateRegisterState extends State<UpdateRegister> {
                       color: Colors.black,
                     ),
                     scrollPadding: const EdgeInsets.all(10),
-                    controller: descriptitonCtrl,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.deck_sharp,
-                        color: Color(0xff955000),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0xff955000),
-                            width: 2.0,
-                          )
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color(0xff955000),
-                            width: 3.0
-                        ),
-                      ),
-                      hintText: 'สไตล์ธรรมชาติ',
-                      hintStyle: TextStyle(
-                        color: Colors.grey,
-                      ),
-                      labelText: 'สไตล์ร้าน',
-                      labelStyle: TextStyle(
-                        color: Colors.black38,
-                      ),
-                    ),
-                  ),
-                ),//Description
-                Padding(
-                  padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
-                  child: TextField(
-                    style: const TextStyle(
-                      color: Colors.black,
-                    ),
-                    scrollPadding: const EdgeInsets.all(10),
                     controller: contactCtrl,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(
@@ -791,8 +755,80 @@ class _UpdateRegisterState extends State<UpdateRegister> {
                       ),
                     ),
                     keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]+')),
+                      LengthLimitingTextInputFormatter(5)
+                    ],
                   ),
                 ),//Contact
+                Padding(
+                  padding: const EdgeInsets.only(right: 40.0, left: 40.0, top: 20),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: wi * 0.035, bottom: hi * 0.03,top: hi * 0.015),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              FontAwesomeIcons.receipt,
+                              color: Color(0xff955000),
+                            ),
+                            SizedBox(width: wi * 0.02,),
+                            const Text(
+                              'รายละเอียดร้าน',
+                              style: TextStyle(
+                                  color: Color(0x9f955000),
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      TextField(
+                        textInputAction: TextInputAction.newline,
+                        maxLength: 500,
+                        maxLines: 5,
+                        style: const TextStyle(
+                          color: Colors.black,
+                        ),
+                        scrollPadding: EdgeInsets.all(10),
+                        controller: descriptitonCtrl,
+                        decoration: const InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(16)),
+                            borderSide: BorderSide(
+                              color: Color(0xff955000),
+                              width: 2.0,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(16)),
+                            borderSide: BorderSide(
+                              color: Color(0xff955000),
+                              width: 2.0,
+                            ),
+                          ),
+                          hintText: 'ใส่รายละเอียดร้าน',
+                          hintStyle: TextStyle(
+                            color: Colors.grey,
+                          ),
+                          labelStyle: TextStyle(
+                            color: Colors.black38,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(16)),
+                            borderSide: BorderSide(
+                                width: 0,
+                                color: Color(0xff955000)
+                            ),
+                          ),
+                          focusColor: Color(0xff955000),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),//Description
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: Row(
@@ -1079,6 +1115,10 @@ class _UpdateRegisterState extends State<UpdateRegister> {
                       ),
                     ),
                     keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]+')),
+                      LengthLimitingTextInputFormatter(5)
+                    ],
                   ),
                 ),//Province_ID
                 Padding(
@@ -1136,6 +1176,47 @@ class _UpdateRegisterState extends State<UpdateRegister> {
       ),
     );
   }
+  Widget buildTextField() => TextField(
+    textInputAction: TextInputAction.newline,
+    maxLength: 500,
+    maxLines: 5,
+    style: const TextStyle(
+      color: Colors.black,
+    ),
+    scrollPadding: EdgeInsets.all(10),
+    controller: descriptitonCtrl,
+    decoration: const InputDecoration(
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+        borderSide: BorderSide(
+          color: Color(0xff955000),
+          width: 2.0,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+        borderSide: BorderSide(
+          color: Color(0xff955000),
+          width: 2.0,
+        ),
+      ),
+      hintText: 'ใส่รายละเอียดร้าน',
+      hintStyle: TextStyle(
+        color: Colors.grey,
+      ),
+      labelStyle: TextStyle(
+        color: Colors.black38,
+      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+        borderSide: BorderSide(
+            width: 0,
+            color: Color(0xff955000)
+        ),
+      ),
+      focusColor: Color(0xff955000),
+    ),
+  );
 }
 
 // Padding(
