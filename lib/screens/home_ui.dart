@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:app_map_coffee_shop/screens/login_ui.dart';
+import 'package:app_map_coffee_shop/screens/reviwe_shop_ui.dart';
 import 'package:app_map_coffee_shop/screens/select_shop_pic_ui.dart';
 import 'package:app_map_coffee_shop/screens/show_manu_page.dart';
 import 'package:app_map_coffee_shop/screens/update_register.dart';
@@ -354,7 +355,17 @@ class _HomeUIState extends State<HomeUI> {
                                 width: wi * 0.35,
                                 height: hi * 0.2,
                                 child: RawMaterialButton(
-                                  onPressed: (){},
+                                  onPressed: (){
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ReviweShopUI(
+                                            data['Email'],
+                                            data['Location_Name']
+                                        )
+                                      )
+                                    );
+                                  },
                                   fillColor: Color(0xff955000),
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10)

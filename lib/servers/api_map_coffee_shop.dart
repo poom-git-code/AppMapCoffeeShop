@@ -216,3 +216,11 @@ Future<bool> apiDeleteImage(String id) async{
   }
 }
 //--------------------------------------------------------------------------------------------------------
+Future<bool> apiDeleteReviwe(String id) async{
+  try{
+    await FirebaseFirestore.instance.collection('mcs_comment').doc(id).delete();
+    return true;
+  }catch(ex){
+    return false;
+  }
+}
