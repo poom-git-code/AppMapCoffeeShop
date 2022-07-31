@@ -112,7 +112,7 @@ class _ShowManuCoffeeUIState extends State<ShowManuCoffeeUI> {
                           (snapshot.data! as QuerySnapshot).docs[index]['manuname'],
                         ),
                         subtitle: Text(
-                          'ราคา ' + (snapshot.data! as QuerySnapshot).docs[index]['price'],
+                          'ราคา ' + (snapshot.data! as QuerySnapshot).docs[index]['price'] + ' บ.',
                         ),
 
                         trailing:IconButton(

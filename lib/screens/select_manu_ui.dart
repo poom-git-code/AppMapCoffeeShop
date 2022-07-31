@@ -4,6 +4,7 @@ import 'package:app_map_coffee_shop/screens/show_manu_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import '../models/ShapesPainter.dart';
 import 'package:path/path.dart' as Path;
@@ -514,7 +515,7 @@ class _SelectManuUIState extends State<SelectManuUI> {
                               width: 3.0
                           ),
                         ),
-                        hintText: 'ลาเต้',
+                        hintText: 'ใส่ชื่อเมนู',
                         hintStyle: TextStyle(
                           color: Colors.grey,
                         ),
@@ -523,6 +524,9 @@ class _SelectManuUIState extends State<SelectManuUI> {
                           color: Colors.black38,
                         ),
                       ),
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(15)
+                      ],
                     ),
                   ),// ชื่อเมนู
                   Padding(

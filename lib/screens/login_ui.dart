@@ -225,24 +225,28 @@ class _LoginUIState extends State<LoginUI> {
                     ), //password
                     const SizedBox(height: 15,),
                     Padding(
-                      padding: const EdgeInsets.only(right: 240),
-                      child: GestureDetector(
-                        onTap: (){
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ForGotPassWordUI()
-                              )
-                          );
-                        },
-                        child: const Text(
-                          'ลืมรหัสผ่าน?',
-                          style: TextStyle(
-                              color: Color(0xff955000),
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold
+                      padding: EdgeInsets.only(left: wi * 0.1),
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ForGotPassWordUI()
+                                  )
+                              );
+                            },
+                            child: const Text(
+                              'ลืมรหัสผ่าน?',
+                              style: TextStyle(
+                                  color: Color(0xff955000),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ), //forgot
                     Padding(

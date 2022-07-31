@@ -48,7 +48,7 @@ class _SelectManuPageState extends State<SelectManuPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.cookie_outlined),
-            label: "ของหวาน",
+            label: "อื่นๆ",
           ),
         ],
         type: BottomNavigationBarType.fixed,

@@ -78,7 +78,7 @@ class _ShowManuUIState extends State<ShowManuUI> {
                   ),
                   tabs: [
                     Tab(text: 'เครื่องดื่ม',),
-                    Tab(text: 'ของหวาน',),
+                    Tab(text: 'อื่นๆ',),
                   ],
                 ),
                 Expanded(

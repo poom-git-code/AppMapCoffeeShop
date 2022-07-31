@@ -213,11 +213,6 @@ class _StarThreeUIState extends State<StarThreeUI> {
         .where('StarType', isEqualTo: 3)
         .snapshots();
 
-    final Stream<QuerySnapshot> _manu2Strem = FirebaseFirestore.instance
-        .collection("mcs_comment")
-        .where('EmailPath', isEqualTo: widget.Email)
-        .where('StarType', isEqualTo: 3.5)
-        .snapshots();
 
     return Padding(
       padding: const EdgeInsets.only(top: 10),
@@ -265,72 +260,76 @@ class _StarThreeUIState extends State<StarThreeUI> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 15,left: 15),
-                                  child: SizedBox(
-                                    width: 60,
-                                    height: 60,
-                                    child: CircleAvatar(
-                                      child: ClipOval(
-                                        child: Image.network(
-                                          (snapshot.data as QuerySnapshot).docs[index]['Image'],
-                                          width: 60,
-                                          height: 60,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 20,left: 20),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${(snapshot.data as QuerySnapshot).docs[index]['Name']}',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                            fontSize: 16
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 5),
-                                        child: RatingBar.builder(
-                                          initialRating: (snapshot.data as QuerySnapshot).docs[index]['StarType'],
-                                          minRating: 1,
-                                          itemSize: 18,
-                                          direction: Axis.horizontal,
-                                          allowHalfRating: true,
-                                          itemCount: 5,
-                                          itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
-                                          itemBuilder: (context, _) => const Icon(
-                                            Icons.star,
-                                            color: Colors.amber,
+                                Stack(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 15,left: 15),
+                                      child: SizedBox(
+                                        width: 60,
+                                        height: 60,
+                                        child: CircleAvatar(
+                                          child: ClipOval(
+                                            child: Image.network(
+                                              (snapshot.data as QuerySnapshot).docs[index]['Image'],
+                                              width: 60,
+                                              height: 60,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
-                                          onRatingUpdate: (rating) {
-                                            print(rating);
-                                            _con = rating as int;
-                                          },
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 120, top: 5),
-                                  child: IconButton(
-                                    onPressed: (){
-                                      id = (snapshot.data as QuerySnapshot).docs[index].id.toString();
-                                      showConfirmDeleteDialog(id);
-                                    },
-                                    icon: Icon(
-                                      FontAwesomeIcons.solidTrashCan,
                                     ),
-                                    color: Color(0xff6D3B00),
-                                  ),
-                                ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 20,left: 90),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${(snapshot.data as QuerySnapshot).docs[index]['Name']}',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                                fontSize: 16
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 5),
+                                            child: RatingBar.builder(
+                                              initialRating: (snapshot.data as QuerySnapshot).docs[index]['StarType'],
+                                              minRating: 1,
+                                              itemSize: 18,
+                                              direction: Axis.horizontal,
+                                              allowHalfRating: true,
+                                              itemCount: 5,
+                                              itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
+                                              itemBuilder: (context, _) => const Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                              ),
+                                              onRatingUpdate: (rating) {
+                                                print(rating);
+                                                _con = rating as int;
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 310, top: 5),
+                                      child: IconButton(
+                                        onPressed: (){
+                                          id = (snapshot.data as QuerySnapshot).docs[index].id.toString();
+                                          showConfirmDeleteDialog(id);
+                                        },
+                                        icon: Icon(
+                                          FontAwesomeIcons.solidTrashCan,
+                                        ),
+                                        color: Color(0xff6D3B00),
+                                      ),
+                                    ),
+                                  ],
+                                )
                               ],
                             ),
                             Padding(

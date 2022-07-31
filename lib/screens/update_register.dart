@@ -641,6 +641,7 @@ class _UpdateRegisterState extends State<UpdateRegister> {
                         color: Colors.grey,
                       ),
                       labelText: 'ชื่อผู้ใช้',
+                      hintText: 'ใสชื่อผู้ใช้',
                       labelStyle: TextStyle(
                         color: Colors.black38,
                       ),
@@ -677,6 +678,7 @@ class _UpdateRegisterState extends State<UpdateRegister> {
                         color: Colors.grey,
                       ),
                       labelText: 'E-Mail',
+                      hintText: 'ใส่ email',
                       labelStyle: TextStyle(
                         color: Colors.black38,
                       ),
@@ -709,7 +711,7 @@ class _UpdateRegisterState extends State<UpdateRegister> {
                             width: 3.0
                         ),
                       ),
-                      hintText: 'Homu cafe',
+                      hintText: 'ใส่ชื่อร้าน',
                       hintStyle: TextStyle(
                         color: Colors.grey,
                       ),
@@ -745,7 +747,7 @@ class _UpdateRegisterState extends State<UpdateRegister> {
                             width: 3.0
                         ),
                       ),
-                      hintText: '020300568',
+                      hintText: 'ใส่เบอร์โทร',
                       hintStyle: TextStyle(
                         color: Colors.grey,
                       ),
@@ -757,7 +759,7 @@ class _UpdateRegisterState extends State<UpdateRegister> {
                     keyboardType: TextInputType.number,
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'[0-9]+')),
-                      LengthLimitingTextInputFormatter(5)
+                      LengthLimitingTextInputFormatter(10),
                     ],
                   ),
                 ),//Contact
@@ -1105,7 +1107,7 @@ class _UpdateRegisterState extends State<UpdateRegister> {
                             width: 3.0
                         ),
                       ),
-                      hintText: '10160',
+                      hintText: 'ใส่รหัสไปรษณี',
                       hintStyle: TextStyle(
                         color: Colors.grey,
                       ),

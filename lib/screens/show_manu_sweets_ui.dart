@@ -111,7 +111,7 @@ class _ShowManuSweetsUIState extends State<ShowManuSweetsUI> {
                       (snapshot.data! as QuerySnapshot).docs[index]['manuname'],
                     ),
                     subtitle: Text(
-                      'ราคา ' + (snapshot.data! as QuerySnapshot).docs[index]['price'],
+                      'ราคา ' + (snapshot.data! as QuerySnapshot).docs[index]['price'] + ' บ.',
                     ),
                     trailing:IconButton(
                       icon: const Icon(
